@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>課題A2 (接近過程抽出)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../../prettify.css">
+    </head>
+    <body>
+        <h1>課題A2 (接近過程抽出)</h1>
+
+        <hr>
+        <h2>接近過程抽出</h2>
+        <p>
+            Fig クラスはグラフィックエディタ上の図形を表すGEFの内部のクラスです.<br>
+            また, FigClass クラスはクラス図上に配置された「クラス」を表す ArgoUML のクラスで, Fig クラスの子孫クラスにあたります.<br>
+        </p>
+
+        <p>
+            <p class = "explanation">
+                課題A2 (機能理解) の終了直後は下図のような状態でデバッグ実行が終了しているはずです.<br>
+                デバッグ実行が終了していることを確認したら, 右上にあるパースペクティブを右クリックし, いったん「トレースデバッガ(順方向)」のパースペクティブを閉じてください.<br>
+                ここでは, 課題A2 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題A2 (機能理解) と同等の内容を理解していくことを目指します. <br>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/ArgoUML_2_delta_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここで, 「<font color="red">トレースデバッガ(逆方向)</font>」のパースペクティブを開いてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/ArgoUML_2_delta_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                その状態のままで, ブレークポイントビュー上にある「ブレークポイントを取り入れる」をクリックしてください.<br>
+                SelectionManager.addFig(Fig) メソッドの130行目と, ModeSelect.mousePressed(MouseEvent) メソッドの156行目の<br>
+                2つにチェックが入っているはずです. ブレークポイントを確認したら, デバッグ実行してください.<br>
+                まずは, SelectionManager クラスのインスタンス (id = 4310438) のフィールド selections が参照している ArrayList のインスタンスに<br>
+                SelectionClass クラスのインスタンス (id = 1672744985) が追加されるまでの過程を見ていきます.<br>
+                デバッグ実行したら, そのまま再開ボタンを3回押してください.<br>
+                すると, SelectionManager クラスの addFig(Fig) メソッドの130行目の2回目の実行で一時停止します.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/ArgoUML_2_delta_05.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, SelectionManager クラスの addFig(Fig) メソッドの130行目にいます.<br>
+                ここで, ステップネクストを3回押してください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/ArgoUML_2_delta_06.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここで, 変数ビュー上の「呼び出し前」のメソッド名が List.add(Object) であることを確認してください.<br>
+                それを確認したら, 変数ビュー上の「呼び出し前」を開いて, 引数を右クリックしてください.<br>
+                右クリックすると, ポップアップメニューが出てくるので, 上の方の ArrayList クラスのインスタンスと<br>
+                SelectionClass のインスタンスを対象とした「オブジェクトの接近過程抽出」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/ArgoUML_2_delta_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                実際に「オブジェクトの接近過程抽出」を実行すると, 下図のような状態になります.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/ArgoUML_2_delta_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「開始時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/ArgoUML_2_delta_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照先側001」から「参照先側040」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/ArgoUML_2_delta_04.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/ArgoUML_2_delta_05.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照元側001」から「参照元側011」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/ArgoUML_2_delta_07.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/ArgoUML_2_delta_08.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/ArgoUML_2_delta_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここまでで, SelectionManager クラスのインスタンス (id = 4310438) のフィールド selections が参照している ArrayList に<br>
+                SelectionClass クラスのインスタンス (id = 1672744985) が追加されるまでの過程を見てきました.<br>
+                ここで, 課題A2の接近過程抽出は終了です.<br>
+                「オブジェクトの接近過程」ビューを全て閉じ, そのあとデバッグ実行を終了してください.<br>
+                <!--デバッグ実行を終了したら, この「トレースデバッガ(逆方向)」のパースペクティブを閉じてください.<br>-->
+                <div class = "image"><img src = "./images/images_problem2_delta/ArgoUML_2_delta_11.png" class = "threeQuartersSize"></div>
+            </p>
+        </p>
+        <hr>
+        <p>
+            課題A2の接近過程抽出が終了しましたら, 以下のアンケートにお答えください.
+            <div><a href = "https://docs.google.com/forms/d/e/1FAIpQLSfVG7t0V57kZQGskltg13of2RE6dp-TobK_cBszorF8x2u31g/viewform" target = "_blank">アンケート回答</a></div>           
+        </p>
+        <a href="../../JHotDraw_Reverse/DescriptionJHotDraw.html">次へ</a>
+    </body>
+</html>

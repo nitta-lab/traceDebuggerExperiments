@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>トレースデバッガ (逆方向)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../prettify.css">
+        <script type="text/javascript">
+            function init(param) {
+                var course = "A";
+                if (param) {
+                    var c = getParam('course', param);
+                    if (c) course = c;
+                }
+                var next = document.getElementById("next");
+                if (course == 'A') {
+                    next.href = "../../courseA/CourseStartA.html";
+                } else if (course == 'B') {
+                    next.href = "../../courseB/CourseStartB.html";
+                }
+            }
+
+            function getParam(name, url) {
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+        </script>
+    </head>
+    <body onLoad="init(location.search)">
+        <h1>トレースデバッガ (逆方向)</h1>
+
+        <hr>
+        <h2>説明</h2>
+        <p>
+            トレースデバッガでは, 実行時のプログラム内部の情報を時系列に記録したファイルであるトレースファイルを読み込み, その読み込んだトレースを元にデバッグ実行を再現することができます.<br>
+            逆方向バージョンでは, 先ほど操作していただいた順方向トレースデバッガの機能に, さらに以下の機能が追加されています.<br>
+            <ul>
+                <li>ステップ系の実行(ステップオーバー、ステップイン、ステップリターン)を逆方向に行うステップバック系の機能</li>
+                <li>現在の実行時点を登録し, 任意のタイミングで登録した実行時点に移ることができる機能</li>
+                <li>フィールドが参照しているオブジェクトや, コレクションから取得してきたオブジェクトに対して, そのオブジェクトが実際に代入または追加された時点まで遡る機能</li>
+                <li>プログラム実行時のある時点でオブジェクトaとオブジェクトbが関連付けられたときに, もともと別々の場所にあったそれらのオブジェクトが接近してきて関連付けられるまでの過程を抽出する機能</li>
+            </ul>
+        </p>
+        <hr>
+        <p>
+            以降の操作はEC2インスタンスにログインし，Eclipseを起動した上で行ってください．
+            EC2インスタンスへのログイン方法については<a id="ec2" href="../../ec2/ConnectToEC2.html" target="_blank">こちら</a>です．
+        </p>
+
+        <p>
+            <p class = "explanation">
+                メニューバーの ウィンドウ → パースペクティブ → パースペクティブを開く → その他... → トレースデバッガ(逆方向) でトレースデバッガのパースペクティブを開いてください.<br>
+                <div class = "image"><img src = "./images/OpenPerspective.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/OpenPerspective_Reverse_1.png" class = "quarterSize"></div>
+            </p>
+            <p class = "explanation">
+                実際に「トレースデバッガ(逆方向)」のパースペクティブを開くと下図のような状態になります.<br>
+                このパースペクティブは初期状態では6つのビューで構成されており, 左上が呼び出しスタックビュー, その横が変数ビュー, 左下がエディタ,<br>
+                右上がブレークポイントビュー, その下が現在の実行時点ビュー, さらに下が実行時点の登録ビューになっています.<br>
+                <div class = "image"><img src = "./images/OpenPerspective_Reverse_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                順方向トレースデバッガのときと同様に, トレースファイル(C:\Users\userXX\runtime-EclipseApplication\TraceDebuggerTest\test.trace)を読み込んで,<br>
+                ブレークポイント(D.java の6行目と, E.java の7行目)をEclipseから取り入れてください.<br>
+                そのあと, デバッグアイコンをクリックしてデバッグ実行し, 再開ボタンを1回押して E.java の7行目で一時停止している状態にしてください.<br>
+                逆向きバージョンのトレースデバッガには, 「再開」を逆向きに行う機能があります.<br>
+                ブレークポイントビューの「逆向きに再開」アイコンをクリックすると, 有効なブレークポイントが入っている行のうち,<br>
+                現在の実行時点から実行を巻き戻して最初に遭遇する行まで実行が進み, そこで実行が再び一時停止します.<br>
+                もし, 該当するブレークポイントがなかった場合は, そのままデバッグ実行が終了します.<br>
+                ここでは, E.java の7行目で一時停止している状態から「逆向きに再開」アイコンをクリックしてください．<br>
+                そうすると, D.java の6行目にまで実行が巻き戻されて再び一時停止します. <br>
+                <div class = "image"><img src = "./images/BackResume_Reverse_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/BackResume_Reverse_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったんステップオーバーを1回押して, D.java の7行目で実行が一時停止している状態にしてください.<br>
+                このデバッガには, 「ステップオーバー」を逆向きに行う機能があります.<br>
+                ブレークポイントビューの「ステップバックオーバー」アイコンをクリックすると, 実行を行単位で巻き戻します.<br>
+                ここでは, ステップバックオーバーによって, D クラスの passB(B) メソッドの7行目から6行目へと実行を巻き戻します.<br>
+                <div class = "image"><img src = "./images/StepBackOver_Reverse_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/StepBackOver_Reverse_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                次にステップオーバーを2回押して, D.java の8行目で実行が一時停止している状態にしてください.<br>
+                このデバッガには, 「ステップイン」を逆向きに行う機能があります.<br>
+                ブレークポイントビューの「ステップバックイン」アイコンをクリックすると, 実行をステートメント単位で巻き戻し,<br>
+                呼び出し先のメソッドがある場合はその呼び出し先のメソッドに後ろから入ります.<br>
+                ここでは, ステップバックインによって, ひとつ前の呼び出し先である E クラスの setC() メソッドへ入っていきます.<br>
+                なお, 逆方向に戻っていく関係上, 呼び出し先メソッドの開始時点ではなく終了時点に現在の実行が移る点に注意してください.<br>
+                <div class = "image"><img src = "./images/StepBackInto_Reverse_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/StepBackInto_Reverse_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                このデバッガには, 「ステップリターン」を逆向きに行う機能があります.<br>
+                ブレークポイントビューの「ステップバックリターン」アイコンをクリックすると, <br>
+                今いるメソッドを呼び出す直前の時点まで呼び出し元メソッドの実行を巻き戻します.<br>
+                ここでは, ステップバックリターンによって, この E クラスの setC(C) メソッドが呼び出される直前の時点, <br>
+                すなわち, 呼び出し元である D クラスの passB(B) メソッドの7行目まで実行を巻き戻します.<br>
+                <div class = "image"><img src = "./images/StepBackReturn_Reverse_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/StepBackReturn_Reverse_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったん, ステップバックインを1回押して, B.java の6行目で実行が一時停止している状態にしてください.<br>
+                実行時点の登録ビューでは, 任意のタイミングで現在の実行時点を登録することができます.<br>
+                ここでは, 現在の実行時点を登録するために, ビュー上にある追加ボタンをクリックしてください.<br>
+                登録された実行時点はビュー上に一覧で表示されます.
+                <div class = "image"><img src = "./images/Register_Reverse_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Register_Reverse_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                また, 登録した実行時点へはいつでもジャンプすることができます<br>
+                ビュー上に登録されている実行時点をクリックすると, その登録した場所に対応するソースコードがエディタ上で開きます.<br>
+                また, ダブルクリックで選択するか, 選択した状態でジャンプボタンをクリックすると, 選んだ実行時点へと現在の実行時点が移ります.<br>
+                ここでは, まずステップリターンを2回押して A.java の10行目で実行が一時停止している状態にしてください.<br>
+                そのあと, ビュー上に登録されている実行時点をダブルクリックで選択するか, 選択した状態でジャンプボタンをクリックして,<br>
+                実際に先ほど登録した B クラスの getC() メソッドの6行目に実際にジャンプすることを確認してください.<br>
+                <div class = "image"><img src = "./images/Register_Reverse_3.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Register_Reverse_4.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                次にステップオーバーを2回押して, D.java の8行目で実行が一時停止している状態にしてください.<br>
+                変数ビューで this などを開き, フィールドを選択した状態で右クリックすると, ポップアップメニューが表示され,<br>
+                「値の代入時点に飛ぶ」を選択すると, このフィールドで参照されているオブジェクトが実際に代入される直前の時点まで実行を遡ることができます.<br>
+                ここでは, this を開いたあとにそのフィールド e をさらに開き, 表示されたフィールド c を右クリックして「値の代入時点に飛ぶ」を選択してください.<br>
+                すると, このフィールド c に値が代入された時点である E クラスの setC(C) メソッドの6行目にまで実行が巻き戻されます.<br>
+                <div class = "image"><img src = "./images/BackToMoment_Reverse_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/BackToMoment_Reverse_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                変数ビュー上で「フィールド代入前」などを開き, その中にある参照先などを右クリックすると, ポップアップメニューが表示されます.<br>
+                ここで, 「オブジェクトの接近過程抽出」を選択すると, 参照元となるオブジェクトと参照先となるオブジェクトがどのようにして接近してきたのかの過程を抽出することができます.<br>
+                <div class = "image"><img src = "./images/Delta_Reverse_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Delta_Reverse_3.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Delta_Reverse_4.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                抽出された過程は「オブジェクトの接近過程」ビューに表示されます. <br>
+                「オブジェクトの接近過程」ビュー上の「開始時点」をクリックすると, 2つのオブジェクトがどのように接近してきたのかの過程について,<br>
+                その開始時点となるメソッド実行に飛ぶことができます.<br>
+                <div class = "image"><img src = "./images/Delta_Reverse_5.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照先側」をクリックすると, 参照先側のオブジェクトがどのように接近してきたのかの過程について各時点に飛んで見ていくことができます.<br>
+                <div class = "image"><img src = "./images/Delta_Reverse_6.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Delta_Reverse_7.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照元側」をクリックすると, 参照元側のオブジェクトがどのように接近してきたのかの過程について各時点に飛んで見ていくことができます.<br>
+                <div class = "image"><img src = "./images/Delta_Reverse_8.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Delta_Reverse_9.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照時点」をクリックすると, 参照元側のオブジェクトと参照先側のオブジェクトが関連付けられた時点に飛ぶことができます.<br>
+                <div class = "image"><img src = "./images/Delta_Reverse_10.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                これで, 逆方向トレースデバッガの説明は終了です.<br>
+                「オブジェクトの接近過程」ビューを全て閉じてから, 終了アイコンをクリックしてデバッグ実行を終了した状態にしてください.<br>
+                デバッグ実行が終了していることを確認したら, 右上にあるパースペクティブを右クリックし, 「トレースデバッガ(逆方向)」のパースペクティブを閉じてください.<br>
+            </p>
+        </p>
+
+        <a id="next" href="../../courseA/CourseStartA.html">実験開始の説明へ進む</a>
+
+    </body>
+</html>

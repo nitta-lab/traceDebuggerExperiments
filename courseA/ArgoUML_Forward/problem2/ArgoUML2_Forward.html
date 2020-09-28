@@ -1,0 +1,293 @@
+<!DOCTYPE HTML>
+<html lang="ja" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <title>課題A2 (機能理解)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../../prettify.css">
+    </head>
+    <body>
+        <h1>課題A2 (機能理解)</h1>
+        <p>
+            課題A2では, ArgoUMLの図形の選択機能について見ていきます.<br>
+            具体的には,
+            <blockquote>
+                「配置された図形がArgoUMLのシステム内部でどのように管理され，選択機能の実行によってどのように取り出されて，どのように選択図形として登録されるか?」
+            </blockquote>
+            を理解することを目指して, 以下のようにトレースデバッガを操作していきます.<br>
+            なお, ArgoUML内部では, グラフ編集用フレームワークであるGEFが使用されています.<br>
+            ワークスペース内のargouml-*が、ArgoUMLを構成するプロジェクトであり, GEF-0.13.7がGEFのプロジェクトです.
+        </p>
+
+        <hr>
+        <h2>前準備</h2>
+        <p>
+            <p class = "explanation">
+                課題A1 (機能理解) のときと同様に「<font color="red">トレースデバッガ(順方向)</font>」のパースペクティブを開いてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_pre/ArgoUML_2_pre_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">                
+                まず, 課題A1で開いた SelectionManager クラスを見ていきます. <br>
+                (閉じてしまった場合は, GEF プロジェクト内で, SelectionManager の型の宣言を検索してください.)<br>
+                ここでは, SelectionManager のフィールド selections に SelectionClass クラスのインスタンス (id = 1672744985) を<br>
+                実際に追加しているのはどこなのかを見ていきます.<br>
+                ソースコード中の selections のいずれかの参照箇所にカーソルを入れ, その selections に対してオブジェクトを追加している<br>
+                全ての行にブレークポイントを入れてください. 今回は, SelectionManager クラスの125行目と130行目の二か所が該当します.
+                <div class = "image"><img src = "./images/images_problem2_pre/ArgoUML_2_pre_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                SelectionManager クラスの125行目と130行目にブレークポイントを入れた状態で,<br>
+                ブレークポイントビュー上の「ブレークポイントをEclipseから取り入れる」アイコンを押してください.<br>
+                すると, 実際にトレース上に実行された記録が残っている130行目のブレークポイントだけが新規追加されます.<br>
+                そのあと, ブレークポイントビュー上で下記のブレークポイントのチェックを外してください.
+                <ol>
+                    <li>83行目 ActionRemoveFromDiagram.actionPerformed(ActionEvent)</li>
+                </ol>
+                <div class = "image"><img src = "./images/images_problem2_pre/ArgoUML_2_pre_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                デバッグ実行を押すと, SelectionManager クラスの addFig(Fig) メソッドの130行目で止まります.<br>
+                ここで, 再開ボタンを押して, このあと実行がどのように移り変わるかを確認していきます.<br>
+                まずは再開ボタンを1回押すと, 再び130行目に止まることが確認できます.<br>
+                もう一度再開ボタンを押すと 今度は ActionRemoveFromDiagram クラスの actionPerformed(ActionEvent) メソッドの85行目に止まることが確認できます.<br>
+                そこからさらに再開ボタンを押していくと, 現在の実行時点は FigNodeModelElement クラスの 1965行目 → Fig クラスの743行目に移り変わっていくことが確認できます.<br>
+                これを確認したら, デバッグ実行をいったん終了してから再び実行し, 一時停止状態から再開ボタンを1回押して130行目での<font color="red">2回目の停止</font>に進めてください.<br>
+                下図の状態になれば, ここで課題A2の前準備は終了です. (呼び出しスタックの2つ手前の呼び出し元が「ModeSelect.mousePressed(MouseEvent) の行: 187」になっているはずです. )
+                <div class = "image"><img src = "./images/images_problem2_pre/ArgoUML_2_pre_04.png" class = "threeQuartersSize"></div>
+            </p>
+        </p>
+
+        <hr>
+        <h2>機能理解</h2>
+        <p>
+            Fig クラスはグラフィックエディタ上の図形を表すGEFの内部のクラスです.<br>
+            また, FigClass クラスはクラス図上に配置された「クラス」を表す ArgoUML のクラスで, Fig クラスの子孫クラスにあたります.<br>
+            ブレークポイントを置いた行は, 図形を選択するたびに実行されます. この行が2回実行される理由は, クラス配置機能で配置されたクラスが選択状態になるときに, <br>
+            まず1回目の実行が行われるためです.
+        </p>
+
+        <p>
+            <p class = "explanation">
+                先ほどの実行手順にしたがって進めていくと, 下図のように SelectionManager クラスの addFig(Fig) メソッド内の130行目で一時停止している状態になっているはずです.<br>
+                この状態になっていれば, <font color="red">ここから時間計測を開始</font>してください. 時間計測はできる限り，1分以内の単位での計測をお願いします.<br>
+                <!--ここで, ソースコードと変数ビューを見ると, SelectionManager クラスのインスタンス (id = 4310438) が参照するフィールド selections へは<br>
+                makeSelectionFor(Fig) メソッドの戻り値である SelectionClass クラスのインスタンス (id = 1672744985) が追加されていることがわかります.<br>-->
+                ここで, ソースコードと変数ビューを見ると, SelectionManager クラスのインスタンス (id = 4310438) のフィールド selections が参照している<br>
+                ArrayList クラスのインスタンスに, makeSelectionFor(Fig) メソッドの戻り値 (SelectionClass クラスのインスタンス) が追加されていることがわかります.<br>
+                課題A2では, このオブジェクトの追加に関わっている SelectionManager クラスのインスタンスと SelectionClass クラスのインスタンスについて見ていきます.<br>
+                まずは, SelectionClass クラスのインスタンスについて見ていきます. ステップインを3回押して, この makeSelectionFor(Fig) メソッドの中に入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                SelectionManager クラスの makeSelectionFor(Fig) メソッドに入りました.<br>
+                ここで, 変数ビューを見ると, 仮引数として FigClass クラスのインスタンス (id = 1675174935) が渡されてきていることがわかります.<br>
+                また, ソースコードを見ると, 1129行目では 仮引数 f で渡されてきたこのインスタンスに対して makeSelection() メソッドが呼び出され, <br>
+                その戻り値がローカル変数 customSelection に代入されていることが確認できます.<br>
+                ここでは, ステップインを2回押してこのメソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                FigClass クラスの makeSelection() メソッドに入りました.<br>
+                ソースコードを見ると, ここで SelectionClass クラスのインスタンスを新たに生成し, その引数として自分自身が渡されていることが確認できます.<br>
+                よって, ここで新たに生成された SelectionClass クラスのインスタンスが FigClass クラスのインスタンス (id = 1675174935) を参照していることがわかります.<br>
+                また, このメソッドでは, この SelectionClass クラスのインスタンスを戻り値として返していることが確認できます.<br>
+                これを確認したら, ステップオーバーを1回押して, 呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                SelectionManager クラスの makeSelectionFor(Fig) メソッドに戻ってきました.<br>
+                ここで, ソースコードを見ると, 先ほど呼び出された FigClass クラスの makeSelection() メソッドの戻り値が,<br>
+                ローカル変数 customSelection に代入されて, それがここでは戻り値として返されていることがわかります.<br>
+                これを確認したら, ステップオーバーで呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_04.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                SelectionManager クラスの addFig(Fig) メソッドに戻ってきました.<br>
+                ここで, 変数ビュー上の「呼び出し前」を開くと, 先ほどの SelectionClass クラスのインスタンス (id = 1672744985) が <br>
+                List.add(Object) メソッドの数として渡されており, これがフィールド selections に追加されることがわかります.<br>
+                また, この引数をさらに開くと, SelectionClass クラスのインスタンス (id = 1672744985) が<br>
+                フィールド content として実際に FigClass クラスのインスタンス(id = 1675174935) を参照していることを確認できます.<br>
+                ここからは, FigClass クラスのインスタンス(id = 1675174935) について見ていきます.<br>
+                ソースコードと変数ビューを見ると, このインスタンスは 仮引数 f として渡されていることが確認できます.<br>
+                この仮引数 f の値がどこから来たのかを見るために, 呼び出しスタック上で1つ呼び出し元をクリックしてください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_05.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は SelectionManager クラスの select(Fig) メソッドの180行目を見ています.<br>
+                ここで, ソースコードを見ると, この FigClass クラスのインスタンス (id = 1675174935) は, ここでも仮引数として渡されてきていることが確認できます.<br>
+                これを確認したら, 呼び出しスタック上でさらに1つ呼び出し元をクリックしてください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_06.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は ModeSelect クラスの mousePressed(MouseEvent) メソッドの187行目を見ています.<br>
+                ここで, ソースコードを見ると, ローカル変数 underMouse で参照されているインスタンスが実引数として渡されていることがわかります.<br>
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_07.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここからは, このローカル変数 underMouse の値がどこから来たのかを見ていきます.<br>
+                ローカル変数 underMouse にカーソルを入れて この underMouse に代入された箇所を探していきます.<br>
+                ローカル変数 underMouse の初期化が160行目にあるので, ここにブレークポイントを入れてください.<br>
+                ブレークポイントを入れたら, ブレークポイントビュー上の「ブレークポイントをEclipseから取り入れる」アイコンを押してください.<br>
+                そのあと, ブレークポイントビュー上で130行目と160行目以外のブレークポイントのチェックを外してください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_08.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったんデバッグ実行を終了してから, 再びデバッグ実行してください.<br>
+                すると, まずは SelectionManager クラスの addFig(Fig) メソッドの130行目で止まります.<br>
+                ここで, 再開ボタンを1回押すと, 次は ModeSelect クラスの mousePressed(MouseEvent) メソッドの160行目で止まります.<br>
+                そのあと, 再開ボタンをもう1回押すと, 再び160行目で止まることが確認できます.<br>
+                さらに再開ボタンを押すと, SelectionManager クラスの addFig(Fig) メソッドの130行目に止まることが確認できます.<br>
+                これによって, 160行目の2回目の実行がローカル変数 underMouse に値が代入された直前の実行時点だとわかります.<br>
+            </p>
+            <p class = "explanation">
+                これを確認したら, いったんデバッグ実行を終了してから, 再びデバッグ実行してください.<br>
+                そのあと, 再開ボタンを2回押して, 160行目の2回目の実行にまで進んでください.<br>
+                ここで, ステップオーバーを1回押すと, 163行目に止まることが確認できます.<br>
+                163行目では, ローカル変数 underMouse で参照されているインスタンスに対して deepSelect(Rectangle) メソッドが呼び出され<br>
+                その戻り値がローカル変数 underMouse に再び代入されていることが確認できます.<br>
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_09.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_10.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここでは, ステップオーバーを8回押して, このローカル変数がこれ以上更新されずに187行目まで進むことを確認してください.<br>
+                これにより, 187行目で実引数として渡しているローカル変数 underMouse の値は, 163行目で呼び出されたメソッドの戻り値から来ていることがわかります.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_11.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったんデバッグ実行を終了してから, 再びデバッグ実行してください.<br>
+                まずは, 再開ボタンを2回押して, 160行目の2回目の実行にまで進んでください.<br>
+                そのあと, ステップオーバーを1回押して163行目に進んでください.<br>
+                ここで, ステップインを2回押して FigGroup クラスの deepSelect(Rectangle) メソッドの中に入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_12.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                FigGroup クラスの deepSelect(Rectangle) メソッドに入りました.<br>
+                ここで, ソースコードを見ると, return this によって, 自分自身が戻り値として返されていることが確認できます.<br>
+                これを確認したら, 呼び出しスタック上で1つ呼び出し元をクリックしてください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_13.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, ModeSelect クラスの mousePressed(MouseEvent) メソッドを見ています.<br>
+                163行目では元々参照されていた値と同じ FigClass クラスのインスタンス (id = 1675174935) が, 再び代入されているだけだということがわかりました.<br>
+                ここで, ソースコードを見ると, 元々の値は160行目で代入されていることが確認できます.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_14.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったんデバッグ実行を終了してから, 再びデバッグ実行してください.<br>
+                そのあと, 再開ボタンを2回押して, 再度160行目の2回目の実行にまで進んでください.<br>
+                ソースコードを見ると, 160行目では Editor クラスの hit(Point) メソッドが呼び出され, <br>
+                その戻り値がローカル変数 underMouse に代入されていることが確認できます.<br>
+                ここで, ステップインを3回押して, このメソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_15.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                Editor クラスの hit(Point) メソッドに入りました.<br>
+                ここでは, ステップオーバーを1回押して446行目に進んだあと, ステップインを2回押して hit(Rectangle) メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_16.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                Editor クラスの hit(Rectangle) メソッドに入りました.<br>
+                ここで, ソースコードを見ると, getLayerManager() メソッドの戻り値に対して hit() メソッドが呼び出され, <br>
+                その戻り値がローカル変数 f に代入されたあと, 次の行で return f によって戻り値として返されていることが確認できます.<br>
+                まずは, ステップインを2回押して getLayerManager() メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_17.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                Editor クラスの getLayerManager() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, Editor クラスのインスタンス (id = 371019845) の<br>
+                フィールド _layerManager が LayerManager クラスのインスタンス (id = 1975264229) を参照していることがわかります.<br>
+                これを確認したら, ステップオーバーを1回押して呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_18.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                Editor クラスの hit(Rectangle) メソッドに戻ってきました.<br>
+                次に, ステップインを1回押して, LayerManager クラスの hit(Rectangle) メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_19.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                LayerManager クラスの hit(Rectangle) メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと LayerManager クラスのインスタンス (id = 1975264229) の<br>
+                フィールド _activeLayer が LayerPerspectiveMutable クラスのインスタンス (id = 1248750852) を参照していることがわかります.<br>
+                これを確認したら, ステップインを4回押して LayerPerspectiveMutable クラスの hit(Rectangle) メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_20.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                LayerPerspectiveMutable クラスの hit(Rectangle) メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, LayerPerspectiveMutable クラスのインスタンス (id = 1248750852) の<br>
+                フィールド contents が ArrayList を参照していることがわかります.<br>
+                また, ソースコードを見ると, 231行目でこの ArrayList から取り出してきた要素を, 233行目の return f で戻り値として返されていることが確認できます.<br>
+                ここでは, ステップオーバーを2回押して232行目にまで進んでください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_21.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は LayerPerspectiveMutable クラスの hit(Rectangle) メソッドの232行目にいます.<br>
+                ここで, 変数ビュー上の「呼び出し後」を開くと, フィールド contents から戻り値として<br>
+                FigClass クラスのインスタンス (id = 1675174935) を取得していることがわかります.<br>
+                ステップオーバーを1回押して, 実際に233行目の return f で戻り値として返されていることを確認してください.<br>
+                これを確認したら, 呼び出しスタック上で4つ呼び出し元である ModeSelect クラスの mousePressed(MouseEvent) メソッドをクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_22.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_23.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は ModeSelect クラスの mousePressed(MouseEvent) メソッドの160行目を見ています.<br>
+                ここで, 変数ビュー上の this を開くと, ModeSelect クラスのインスタンス (id = 1807431709) の<br>
+                フィールド editor が Editor クラスのインスタンス (id = 371019845) を参照していることがわかります.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_24.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここまでの結果から, SelectionClass クラスのインスタンスに関わる各オブジェクトの関係について, 以下のことがわかりました.<br>
+                <ol>
+                    <li>SelectionClass クラスのインスタンス (id = 1672744985) が生成されるとき, Fig クラスのインスタンス (id = 1675174935) が引数に渡されている.</li>
+                    <li>FigClass クラスのインスタンス (id = 1675174935) は, LayerPerspectiveMutable クラスのインスタンス (id = 1248750852) にリストで管理されている.</li>
+                    <li>LayerPerspectiveMutable クラスのインスタンス (id = 1248750852) は LayerManager クラスのインスタンス (id = 1975264229) が参照している.</li>
+                    <li>LayerManager クラスのインスタンス (id = 1975264229) は Editor クラスのインスタンス (id = 371019845) が参照している.</li>
+                    <li>Editor クラスのインスタンス (id = 371019845) は ModeSelect クラスのインスタンス (id = 1807431709) が参照している.</li>
+                </ol>
+                課題A2では, オブジェクトの追加に関わっている SelectionManager クラスのインスタンスと SelectionClass クラスのインスタンスについて見るところから始めました.<br>
+                ここからは, SelectionManager クラスのインスタンスの方がどこから来たかを見ていきます.<br>
+            </p>
+            <p class = "explanation">
+                ソースコードをスクロールして187行目を見ると, SelectionManager クラスのインスタンスはローカル変数 sm で参照されていることが確認できます.<br>
+                ここでは, このローカル変数 sm の値がどこから来たかを見るために, ローカル変数 sm にカーソルを入れて, 代入された箇所を探していきます.<br>
+                ローカル変数 sm の初期化が156行目にあるので, ここにブレークポイントを入れてください.<br>
+                ブレークポイントを入れたら, ブレークポイントビュー上の「ブレークポイントをEclipseから取り入れる」アイコンを押してください.<br>
+                そのあと, ブレークポイントビュー上で130行目と156行目以外のブレークポイントのチェックを外してください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_25.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったんデバッグ実行を終了してから, 再びデバッグ実行してください.<br>
+                すると, まずは SelectionManager クラスの addFig(Fig) メソッドの130行目で止まります.<br>
+                ここで, 再開ボタンを1回押すと, 次は ModeSelect クラスの mousePressed(MouseEvent) メソッドの156行目で止まります.<br>
+                そのあと, 再開ボタンをもう1回押すと, 再び156行目で止まることが確認できます.<br>
+                さらに再開ボタンを押すと, SelectionManager クラスの addFig(Fig) メソッドの130行目に止まることが確認できます.<br>
+                これによって, 156行目の2回目の実行がローカル変数 sm に値が代入された直前の実行時点だとわかります.
+            </p>
+            <p class = "explanation">
+                これを確認したら, いったんデバッグ実行を終了してから, 再びデバッグ実行してください.<br>
+                そのあと, 再開ボタンを2回押して, 156行目の2回目の実行にまで進んでください.<br>
+                156行目では, Editor クラスの getSelectionManager() メソッドが呼び出され, その戻り値がローカル変数 sm に代入されていることが確認できます.<br>
+                ここで, ステップインを2回押して, このメソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_26.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                Editor クラスの getSelectionManager() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと Editor クラスのインスタンス (id = 371019845) の<br>
+                フィールド _selectionManager が SelectionManager クラスのインスタンス (id = 4310438) を参照していることがわかります.<br>
+                これを確認したら, 呼び出しスタック上で1つ呼び出し元をクリックしてください.
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_27.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は ModeSelect クラスの mousePressed(MouseEvent) メソッドを見ています.<br>
+                ここで, 課題A2は終了です. <font color="red">時間計測を終了</font>してください.<br>
+                また, 終了アイコンを押して, デバッグ実行を終了しておいてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_28.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_29.png" class = "threeQuartersSize"></div>
+            </p>
+        </p>
+        <hr>
+        <p>
+            課題A2の機能理解が終了しましたら, 以下のアンケートにお答えください.
+            <div><a href = "https://docs.google.com/forms/d/e/1FAIpQLSfeX5tsMqlmE-4FFHELWDkscUX8vzfpRVuWsonjjNwydHUouw/viewform" target = "_blank">アンケート回答</a></div>           
+        </p>
+        <a href="ArgoUML2_Forward_Delta.html">次へ</a>
+    </body>
+</html>

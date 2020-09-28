@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>課題B3 (接近過程抽出)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../../prettify.css">
+    </head>
+    <body>
+        <h1>課題B3 (接近過程抽出)</h1>
+
+        <hr>
+        <h2>接近過程抽出</h2>
+        <p>
+            Fig クラスはグラフィックエディタ上の図形を表すGEFの内部のクラスです.<br>
+            また, FigClass クラスはクラス図上に配置された「クラス」を表す ArgoUML のクラスで, Fig クラスの子孫クラスにあたります.<br>
+        </p>
+
+        <p>
+            <p class = "explanation">
+                課題B3 (機能理解) の終了直後は下図のような状態になっているはずです.<br>
+                ここでは, 課題B3 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B3 (機能理解) と同等の内容を理解していくことを目指します. <br>
+                まずは, ActionRemoveFromDiagram クラスのインスタンスに FigClass クラスのインスタンス (id = 1675174935) が接近する過程を抽出して見ていきます.<br>
+                ここで, 「実行時点の登録」ビュー上で登録している「89行目 ActionRemoveFromDiagram.actionPerformed(ActionEvent)」をダブルクリックしてください.<br>
+                すると, 現在の実行時点が ActionRemoveFromDiagram クラスの actionPerformed(ActionEvent) メソッドの89行目に移ります.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta_pre/ArgoUML_1_delta_pre_01.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem1_delta_pre/ArgoUML_1_delta_pre_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, 現在は ActionRemoveFromDiagram クラスの actionPerformed(ActionEvent) メソッドの89行目にいます.<br>
+                ここで, 変数ビュー上の「呼び出し前」のメソッド名が FigNodeModelElement.removeFromDiagram() であることを確認してください.<br>
+                それを確認したら, 変数ビュー上の「呼び出し前」を開いて, レシーバを右クリックしてください.<br>
+                右クリックすると, ポップアップメニューが出てくるので, 「オブジェクトの接近過程抽出」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta_pre/ArgoUML_1_delta_pre_04.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                実際に「オブジェクトの接近過程抽出」を実行すると, 下図のような状態になります.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「開始時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照先側001」から「参照先側018」までを順番にクリックしていってください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_04.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_06.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照時点」をクリックしていってください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_07.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここまでで, ActionRemoveFromDiagram クラスのインスタンスに FigClass クラスのインスタンス (id = 1675174935) が接近する過程を見てきました.<br>
+                抽出した結果 (「参照先側012」と「参照先側013」) を見ると, SelectionManager#getFigs() 中のローカル変数 figs が参照している<br>
+                Vector オブジェクトに追加された FigClass クラスのインスタンスを後で取得してきていることがわかりましたが, <br>
+                その FigClass クラスのインスタンスが Vector オブジェクトに追加されるまでの経緯は, この抽出範囲だけではわかりません.<br>
+                そこで, ここからは, そのローカル変数 figs に FigClass クラスのインスタンス (id = 1675174935) が追加されるまでの過程を見ていきます.<br>
+                まずは, 「オブジェクトの接近過程抽出」ビュー上の「参照先側012」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class ="explanation">
+                先ほどの操作によって, 現在は SelectionManager クラスの getFigs() メソッドの360行目にいます.<br>
+                ここで, まずはステップオーバーを2回押して363行目にまで進んでください.<br>
+                363行目にまで進んだら, 次はステップネクストを4回押してください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_10.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_11.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここで, 変数ビュー上の「呼び出し前」のメソッド名が Vector.addElement(Object) であることを確認してください.<br>
+                それを確認したら, 変数ビュー上の「呼び出し前」を開いて, 引数を右クリックしてください.<br>
+                右クリックすると, ポップアップメニューが出てくるので, 上の方の Vector クラスのインスタンスと FigClass クラスのインスタンスに対する<br>
+                「オブジェクトの接近過程抽出」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_12.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                実際に「オブジェクトの接近過程抽出」を実行すると, 下図のような状態になります.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_13.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「開始時点」をクリックしてください.<br>         
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_14.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照先側001」から「参照先側009」までを順番にクリックしていってください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_15.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_17.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照元側001」から「参照元側002」までを順番にクリックしていってください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_18.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_19.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照時点」をクリックしていってください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_20.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここまでで, SelectionManager#getFigs() メソッド内のローカル変数 figs が参照している Vector クラスのインスタンス<br>
+                (id = 450474599) に FigClass クラスのインスタンス (id = 1675174935) が追加されるまでの過程を見てきました.<br>
+                ここで, 課題B3の接近過程抽出は終了です.<br>
+                「オブジェクトの接近過程」ビューを全て閉じてください.<br>
+                なお, デバッグ実行は終了せずにそのままの状態にしておいてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/ArgoUML_1_delta_21.png" class = "threeQuartersSize"></div>
+            </p>
+            <hr>
+            <p>
+                課題B3の接近過程抽出が終了しましたら, 以下のアンケートにお答えください.
+                <div><a href = "https://docs.google.com/forms/d/e/1FAIpQLSdDniX3lHNv3BzxDZITsURzoTW5N9FLQVKiipS5JPqu2ks3Rg/viewform" target = "_blank">アンケート回答</a></div>           
+            </p>
+        <a href="../problem2/ArgoUML2_Reverse.html">次へ</a>
+        </p>
+    </body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>課題B3 (機能理解)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../../prettify.css">
+    </head>
+    <body>
+        <h1>課題B3 (機能理解)</h1>
+        <p>
+            課題B3では, ArgoUMLの図形の削除機能について見ていきます.<br>
+            具体的には,
+            <blockquote>
+                「選択された図形がArgoUMLのシステム内部でどのように管理され, 削除機能の実行によってどのように取り出されて, 削除されるか?」
+            </blockquote>
+            を理解することを目指して, 以下のようにトレースデバッガを操作していきます.<br>
+            また, ArgoUML内部では, グラフ編集用フレームワークであるGEFが使用されています.<br>
+            ワークスペース内のargouml-*が、ArgoUMLを構成するプロジェクトであり, GEF-0.13.7がGEFのプロジェクトです.
+        </p>
+
+        <hr>
+        <h2>実行手順</h2>
+        <p>
+            <ol>
+                <!--
+                <li class = "explanation">
+                    デスクトップのEclipseを起動し, 指定されたワークスペースを開いてください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/ArgoUML_1_pre_01.png" class = "threeQuartersSize"></div>
+                </li>
+                -->
+                <li class = "explanation">
+                    ワークスペース中にあるGEF-0.13.7プロジェクトを選択し, メニューバーの 検索 → Java で Fig というタイプの宣言を検索してください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/SearchJava_ArgoUML_AWS_pre.png" class = "threeQuartersSize"></div>
+                    <div class = "image"><img src = "./images/images_problem1_pre/SearchJava_ArgoUML_AWS.png" class = "halfSize"></div>
+                </li>
+                <li class = "explanation">
+                    Figクラスのソースファイルを開いて743行目 (Fig#removeFromDiagram()) にブレークポイントを入れてください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/Breakpoint_ArgoUML_AWS.png" class = "threeQuartersSize"></div>
+                </li>
+                <li class = "explanation">
+                    メニューバーの ウィンドウ → パースペクティブ → パースペクティブを開く → その他 → <font color="red">トレースデバッガ(逆方向)</font> でトレースデバッガのパースペクティブを開いてください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/OpenPerspective_ArgoUML_AWS.png" class = "threeQuartersSize"></div>
+                    <div class = "image"><img src = "./images/images_problem1_pre/OpenPerspective_Reverse_AWS.png" class = "halfSize"></div>
+                </li>
+                <li class = "explanation">
+                    開いたトレースデバッガのパースペクティブ右上のブレークポイントビュー上にあるフォルダアイコン(左から1番目)を<br>
+                    クリックしてトレースファイル (C:\Users\userXX\runtime-EclipseApplication\argouml\ArgoUMLBenchMarkWithMoreStandardClasses.trace) を開いてください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/ArgoUML_1_pre_07.png" class = "threeQuartersSize"></div>
+                    <div class = "image"><img src = "./images/images_problem1_pre/ArgoUML_1_pre_08.png" class = "halfSize"></div>
+                </li>
+                <li class = "explanation">
+                    トレースファイルの読み込みが終わるまで待ってから, ブレークポイントビュー上にある「ブレークポイントをEclipseから取り入れる」アイコン(左から2番目)を<br>
+                    クリックしてトレースデバッガ用のブレークポイントを作成してください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/ArgoUML_1_pre_09.png" class = "threeQuartersSize"></div>
+                </li>
+                <li class = "explanation">
+                    ブレークポイントビュー上にあるデバッグアイコン(左から3番目)をクリックしてください.<br>
+                    トレースデバッガによるデバッグ実行が起動し, ブレークポイントを入れた位置の行が選択された状態で一時停止します.
+                    <div class = "image"><img src = "./images/images_problem1_pre/ArgoUML_1_pre_10.png" class = "threeQuartersSize"></div>
+                </li>
+            </ol>
+        </p>
+
+        <hr>
+        <h2>機能理解</h2>
+        <p>
+            Fig クラスはグラフィックエディタ上の図形を表すGEFの内部のクラスです.<br>
+            また, FigClass クラスはクラス図上に配置された「クラス」を表す ArgoUML のクラスで, Fig クラスの子孫クラスにあたります.<br>
+            ブレークポイントを置いた行は、図形を削除するたびに実行されます.
+        </p>
+
+        <p>
+            <p class = "explanation">
+                先ほどの実行手順にしたがって進めていくと, 下図のように Fig クラスの removeFromDiagram() メソッド内の743行目で一時停止している状態になっているはずです.<br>
+                この状態になっていれば, <font color="red">ここから時間計測を開始</font>してください. 時間計測はできる限り，1分以内の単位での計測をお願いします.<br>
+                ここで, 変数ビューを確認すると, このメソッド実行は FigClass クラスのインスタンス (id = 1675174935) に対する呼び出しだとわかります.<br>
+                この FigClass クラスのインスタンス (id = 1675174935) がどこから来たのかを確認していきます.<br>
+                まずは呼び出しスタック上で1つ呼び出し元をクリックしてください.
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, 呼び出し元である FigNode クラスの removeFromDiagram() メソッドを見ています.<br>
+                ここで, 変数ビューを見ると, このメソッドも同一の FigClass クラスのインスタンス (id = 1675174935) に対して呼び出されていることがわかります.<br>
+                これを確認したら, 呼び出しスタック上でさらに1つ呼び出し元をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, 呼び出し元である FigNodeModelElement クラスの removeFromDiagramImpl() メソッドを見ています.<br>
+                ここで, 変数ビューを見ると, このメソッドも先ほどと同様に FigClass クラスのインスタンス (id = 1675174935) に対して呼び出されていることがわかります.<br>
+                これを確認したら, 呼び出しスタック上でさらに1つ呼び出し元をクリックしてください.
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, 呼び出し元である FigNodeModelElement クラスの removeFromDiagram() メソッドを見ています.<br>
+                ここで, ソースコードを見ると, ローカル変数 delegate が参照しているインスタンスに対して removeFromDiagramImpl() メソッドが呼び出されていることがわかります.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_04.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                このローカル変数 delegate で参照されるインスタンスはどこから来たのかを確認します.<br>
+                ソースコードを見ると, 1965行目に delegate への代入文があることがわかるので,<br>
+                ステップバックオーバーを1回押して, その代入文の実行直前の時点まで戻ってください.<br>
+                1965行目の delegate への代入文の時点まで戻ったら, ステップインを1回押して getRemoveDelegate() メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_05.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                FigNodeModelElement クラスの getRemoveDelegate() メソッドに入りました.<br>
+                ここで, ソースコードを見ると, このメソッドでは return this で自分自身を戻り値として返していることが確認できます.<br>
+                これを確認したら, ステップバックリターンを1回押して呼び出し元へと戻ってください.
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_06.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                呼び出し元に戻ると, 先ほどの return this の値が delegate に代入されていることがわかります.<br>
+                ここで, 再びステップバックリターンを1回押してさらに呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_07.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                呼び出し元である ActionRemoveFromDiagram クラスの actionPerformed(ActionEvent) メソッドの89行目に戻ってきました.<br>
+                ここで, 「トレースデバッガ」パースペクティブの右下にある「実行時点の登録」ビューの追加ボタンをクリックしてください.<br>
+                そうすると, 現在の実行時点がこのビュー上に登録されます.
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_08.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                変数ビュー上にある「呼び出し前」を開くと, 89行目からは, FigClass クラスのインスタンス (id = 1675174935) のメソッドが呼び出されていることがわかります.<br>
+                この FigClass クラスのインスタンスがどこから来たのかを確認するために, ステップバックオーバーを3回押して, 86行目の拡張for文まで戻ってください.<br>
+                ここで FigClass クラスのインスタンスは, ローカル変数 figs によって参照されているリストから, 拡張for文によって取得されてきたことがわかります.<br>
+                ここからは, figs が参照しているリストがどこから来たのかと, そのリストに FigClass クラスのインスタンスがどこで追加されたのかを見ていきます.<br>
+                まずは, ステップバックインを3回押して, 85行目の getFigs() メソッドの中に後ろから入ってください.
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                SelectionManager クラスの getFigs() メソッドに後ろから入りました.<br>
+                ここではステップバックオーバーを1回押してください.<br>
+                すると, 363行目にある Vector クラスの addElement(Object) メソッドの呼び出し前の時点に来ます.<br>
+                ここで, 変数ビュー上にある「呼び出し前」を開くと, addElement(Object) メソッドの引数として FigClass クラスのインスタンスが渡されていることがわかります.<br>
+                また, この時点で「実行時点の登録」ビューの追加ボタンをクリックして実行時点の登録を行ってください.<br>
+                さらに, この FigClass クラスのインスタンスは, Selection クラスの getContent() メソッドの戻り値として返されています.<br>
+                getContent() メソッドの戻り値を確認するために, ステップバックインを1回押して, このメソッドの中に後ろから入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_10.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_11.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                Selection クラスの getContent() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, Selection クラスの子孫クラスである SelectionClass クラスのインスタンスの<br>
+                フィールド content が FigClass クラスのインスタンス (id = 1675174935) を参照していることがわかります.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_12.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの結果から, FigClass クラスのインスタンス (id = 1675174935) は SelectionClass クラスのインスタンス (id = 1672744985) が参照していることがわかりました.<br>
+                次は, この SelectionClass クラスのインスタンスがどこから来たのかを見ていきます.<br>
+                呼び出しスタック上で呼び出し元である SelectionManger クラスの getFigs() メソッドをクリックしてください.<br>
+                ここで, ソースコードを見ると, SelectionClass クラスのインスタンスは, フィールド selections によって参照されているリストから取得していることが確認でき,<br>
+                さらに変数ビュー上の this を開くと, SelectionManager クラスのインスタンス (id = 4310438) の selections フィールドによって参照されているのは, <br>
+                ArrayList のインスタンス (id = 125345735) であることがわかります.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_13.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの結果から, SelectionClass クラスのインスタンス (id = 1672744985) は, SelectionManager クラスのインスタンス (id = 4310438) の<br>
+                selections フィールドが参照している ArrayList のインスタンスによって管理されていることがわかりました.<br>
+                次は, この SelectionManager クラスのインスタンスがどこから来たのかを見ていきます.<br>
+                呼び出しスタック上でさらに呼び出し元である ActionRemoveFromDiagram クラスの actionPerformed(ActionEvent) メソッドをクリックしてください.<br>
+                ここでは, ステップバックインを1回押して Editor クラスの getSelectionManager() メソッドの中に後ろから入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_14.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                Editor クラスの getSelectionManager() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, この Editor クラスのインスタンスのフィールド _selectionManager が<br>
+                SelectionManager クラスのインスタンス (id = 4310438) を参照していることがわかります.
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_15.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの結果から, SelectionManager クラスのインスタンス (id = 431048) は<br>
+                Editor クラスのインスタンス (id = 371019845) が参照していることがわかりました.<br>
+                次は, この Editor クラスのインスタンスがどこから来たのかを見ていきます.<br>
+                呼び出しスタック上で呼び出し元をクリックしてください.
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_16.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, ActionRemoveFromDiagram クラスの actionPerformed(ActionEvent) メソッドの85行目を見ています.<br>
+                ここで, ソースコードを見ると, この Editor クラスのインスタンスはローカル変数 ce に代入されている値だとわかります.<br>
+                ここでは, このローカル変数 ce の値がどこから来たのかを見ていきます.<br>
+                ステップバックオーバーを2回押して83行目まで戻ってください.<br>
+                83行目ではローカル変数 ce に Globals クラスの static メソッドである curEditor() メソッドの戻り値が代入されています.<br>
+                ステップインを1回押してこのメソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_17.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                Globals クラスの curEditor() メソッドに入りました.<br>
+                ここで, ソースコードを見ると, Globalsクラスの static フィールド _curEditor が<br>
+                Editor クラスのインスタンス (id = 371019845) を参照していることがわかります.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_18.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの結果から, Editor クラスのインスタンス (id = 371019845) は Globals クラスの static フィールド _curEditor から取得していることがわかりました.<br>
+                呼び出しスタック上で呼び出し元をクリックしてください.<br>
+                ここで, 課題B3は終了です. <font color="red">時間計測を終了</font>してください.<br>
+                なお, デバッグ実行は終了せずにそのままの状態にしておいてください.<br>
+                <div class = "image"><img src = "./images/images_problem1/ArgoUML_1_19.png" class = "threeQuartersSize"></div>
+            </p>
+            <hr>
+            <p>
+                課題B3の機能理解が終了しましたら, 以下のアンケートにお答えください.
+                <div><a href = "https://docs.google.com/forms/d/e/1FAIpQLSfNGfwwFa7A4PHtEn-gEXgNYxG0EoEpyN_V2KjP3tpOAlScWg/viewform" target = "_blank">アンケート回答</a></div>           
+            </p>
+        <a href="ArgoUML1_Reverse_Delta.html">次へ</a>
+        </p>
+    </body>
+</html>

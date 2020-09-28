@@ -1,0 +1,376 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>課題B2 (機能理解)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../../prettify.css">
+    </head>
+    <body>
+        <h1>課題B2 (機能理解)</h1>
+        <p>
+            課題B2では, JHotDrawの図形の選択機能について見ていきます.<br>
+            具体的には,
+            <blockquote>
+                「配置された図形がJHotDrawのシステム内部でどのように管理され，図形選択機能の実行によってどのように取り出されて，どのように選択図形として登録されるか?」
+            </blockquote>
+            を理解することを目指して, 以下のようにトレースデバッガを操作していきます.<br>
+            ワークスペース内のjhotdraw7が、JHotDrawを構成するプロジェクトです。
+        </p>
+
+        <hr>
+        <h2>前準備</h2>
+        <p>
+            <p class = "explanation">
+            課題B1 (機能理解) のときと同様に「<font color="red">トレースデバッガ(順方向)</font>」のパースペクティブを開いてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ブレークポイントビュー上の「ブレークポイントをEclipseから取り入れる」アイコンを押してください.<br>
+                ブレークポイントを入れたら, 全てのブレークポイントにチェックが入った状態にしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                デバッグ実行してください.<br>
+                すると, まずは DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドの98行目で実行時点が一時停止します.<br>
+                そのまま, 再開ボタンを4回押して, DefaultDragTracker クラスの mousePressed(MouseEvent) メソッド116行目の2回目の実行にまで進んでください.<br>
+                ここで, ステップインを押して DefaultDrawingView クラスの getSelectedFigures() メソッドの中に入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_05.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_07.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, 現在は DefaultDrawingView クラスの getSelectedFigures() メソッドの931行目にいます.<br>
+                ここで, フィールド selectedFigures が参照している LinkedHashSet クラスのインスタンス (id = 1787265837) に,<br>
+                RectangleFigure クラスのインスタンス (id = 1952912699) を実際に追加しているのはどこなのかを見ていきます.<br>
+                ソースコード中の selectedFigures にカーソルを入れ, そのフィールドに対してオブジェクトを追加している全ての行にブレークポイントを入れてください.<br>
+                今回は, DefaultDrawingView クラスの780行目と815行目と889行目の三か所が該当します.<br>
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_10.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_11.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_12.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの780行目と815行目と889行目にブレークポイントを入れた状態で,<br>
+                ブレークポイントビュー上の「ブレークポイントをEclipseから取り入れる」アイコンを押してください.<br>
+                すると, 実際にトレース上に実行された記録が残っている780行目にだけブレークポイントが新規追加されます.<br>
+                そのあと, ブレークポイントビュー上で下記3つのブレークポイントのチェックを外してください.<br>
+                <ol>
+                    <li>159行目 DefaultDragTracker.mouseDragged(MouseEvent)</li>
+                    <li>&nbsp;&nbsp;98行目 DefaultDragTracker.mousePressed(MouseEvent)</li>
+                    <li>116行目 DefaultDragTracker.mousePressed(MouseEvent)</li>
+                </ol>
+                ここで, デバッグ実行をいったん停止してください.<br>
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_13.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                デバッグ実行を押すと, DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目で止まります.<br>
+                ここで, 再開ボタンを押して, このあと実行がどのように移り変わるかを確認していきます.<br>
+                まずは再開ボタンを1回押すと, 再び780行目に止まることが確認できます.<br>
+                そこからさらに再開ボタンを押していくと, その後118行目に2回止まることが確認できます.<br>
+                これを確認したら, デバッグ実行をいったん終了してから再び実行し, 再開ボタンを1回押して780行目での<font color="red">2回目の停止</font>に進めてください.<br>
+                下図の状態になれば, ここで課題B2の前準備は終了です. (呼び出しスタックの2つ手前の呼び出し元が「DelegationSelectionTool(SelectionTool).mousePressed(MouseEvent)」になっているはずです. )
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_14.png" class = "threeQuartersSize"></div>
+            </p>
+        </p>
+
+        <hr>
+        <h2>機能理解</h2>
+        <p>
+            Figure クラスは図形を表す JHotDraw のクラスです.<br>
+            また, RectangleFigure クラスは矩形を表す JHotDraw のクラスで, Figure クラスの子孫クラスにあたります.<br>
+            ブレークポイントを置いた行は、図形を選択するたびに実行されます. <br>
+            この行が2回実行される理由は, 矩形配置機能で配置された矩形が選択状態になるときに, まず1回目の実行が行われるためです.
+        </p>
+
+        <p>
+            <p class = "explanation">
+                先ほどの前準備にしたがって進めていくと, 下図のように DefaultDrawingView クラスの<br>
+                addToSelection(Figure) メソッド内の780行目で一時停止している状態になっているはずです.<br>
+                この状態になっていれば, <font color="red">ここから時間計測を開始</font>してください. 時間計測はできる限り，1分以内の単位での計測をお願いします.<br>
+                DefaultDrawingView クラスの addToSelection(Figures) メソッドの780行目では, フィールド selectedFigures が参照しているセットに<br>
+                仮引数 figure が参照している RectangleFigure クラスのインスタンス (id = 1952912699) を追加していることが確認できます.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                まずは, この仮引数 figure の値がどこから来たのかを見るために, 呼び出しスタック上で1つ呼び出し元をクリックして戻ってください.<br>
+                ソースコードを見ると, ここではローカル変数 view で参照されているインスタンスに対して先ほどの addToSelection(Figure) メソッドが呼び出されていることがわかります.<br>
+                ここで, 変数ビュー上で「呼び出し前」および this を開いてオブジェクトのIDを確認してください.<br>
+                すると, view の値は DefaultDrawingView クラスのインスタンス (id = 150367587) であり,<br>
+                addToSelection(Figure) メソッドの引数には RectangleFigure クラスのインスタンス (id = 1952912699) が渡されていることが確認できます.<br>
+                また, この RectangleFigure クラスのインスタンス (id = 1952912699) は, DefaultDragTracker クラスのインスタンス (id = 758826749) の<br>
+                フィールド anchorFigure によって参照されていることがわかります.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここでは, 先にローカル変数 view の値がどこから来たのかを見ていきます.<br>
+                ブレークポイントビュー上の 「98行目 DefaultDragTracker.mousePressed(MouseEvent)」のブレークポイントにチェックを入れてください.<br>
+                ブレークポイントにチェックを入れたら, デバッグ実行をいったん終了してから, もう一度デバッグ実行してください.<br>
+                すると, まずは DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目に止まります.<br>
+                続けて, 現在の実行時点がどのように移り変わっていくかを確認するために再開ボタンを押していくと, 現在の実行が98行目 → 780行目 と移っていくことが確認できます.<br>
+                これを確認したら, デバッグ実行をいったん終了してください.
+            </p>
+            <p class = "explanation">
+                再びデバッグ実行してから, 再開ボタンを1回押して DefaultDragTracekr クラスの mousePressed(MouseEvent) メソッドの98行目にまで進めてください.<br>
+                ここで, ステップインを1回押して, getView() メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                AbstractTool クラスの getView() メソッドの中に入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DefaultDragTracker クラスのインスタンス(id = 758826749) の<br>
+                フィールド editor が DefaultDrawingEditor クラスのインスタンス (id = 1859859960) を参照していることがわかります.<br>
+                これを確認したら, ステップインを3回押して getActiveView() メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_04.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingEditor クラスの getActiveView() メソッドの中に入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DefaultDrawingEditor クラスのインスタンス (id = 1859859960) の<br>
+                フィールド activeView が DefaultDrawingView クラスのインスタンス (id = 150367587) を参照していることがわかります.<br>
+                これを確認したら, 呼び出しスタック上で2つ呼び出し元をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_05.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドの98行目を見ています.<br>
+                ここで, 変数ビュー上で this を開いて, フィールド anchorFigure と this 自体のIDを確認してください.<br>
+                DefaultDragTracker クラスのインスタンス (id = 758826749) の フィールド anchorFigure が<br>
+                RectangleFigure クラスのインスタンス (id = 1952912699) を参照していることが確認できます.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_06.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここからは, このフィールド anchorFigure に RectangleFigure クラスのインスタンスへの参照が代入された時点を見ていきます.<br>
+                ソースコード中の anchorFigure にカーソルを入れて, ソースコード中で代入しているところ全てにブレークポイントを入れてください.<br>
+                今回は, DefaultDragTracker クラスの84行目と218行目の二か所が該当します.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_07.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_08.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDragTracker クラスの84行目と218行目にブレークポイントを入れたら, ブレークポイントビュー上の「ブレークポイントをEclipseから取り入れる」アイコンを押してください.<br>
+                すると, 実際にトレース上に実行された記録が残っている218行目にだけブレークポイントが新規追加されます.<br>
+                そのあと, ブレークポイントビュー上で780行目と218行目以外のブレークポイントのチェックを外してください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                デバッグ実行をいったん終了してから, 再びデバッグ実行してください.<br>
+                すると, まずは DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目に止まります.<br>
+                ここで, 再開ボタンを1回押すと, 今度は DefaultDragTracker クラスの setDraggedFigure(Figure) メソッドの218行目に止まることが確認できます.<br>
+                さらに再開ボタンを1回押すと, DefaultDragTracker クラスの addToSelection(Figure) メソッドの780行目に止まることが確認できます.<br>
+                これにより, setDraggedFigure(Figure) メソッドの218行目で フィールド anchorFigure に代入された値があとで取得され, それが780行目で追加されていることがわかります.<br>
+            </p>
+            <p class = "explanation">
+                デバッグ実行をいったん終了してから, 再びデバッグ実行してください.<br>
+                そのあと, 再開ボタンを1回押して DefaultDragTracker クラスの setDraggedFigure(Figure) メソッドの218行目にまで進んでください.<br>
+                ここで, 変数ビューを見て this (id = 758826749) と 引数の f (id = 1952912699) のIDをそれぞれ確認してください.<br>
+                これを確認したら, 呼び出しスタック上で1つ呼び出し元をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_10.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, 呼び出し元である SelectionTool クラスの getDragTracker(Figure) メソッドを見ています.<br>
+                ここで, ソースコードを見ると, DefaultDragTracker クラスのインスタンス (id = 758826749) が<br>
+                フィールド dragTracker に代入されており, それが戻り値としても返されることがわかります.<br>
+                これを確認したら, 呼び出しスタック上でさらに1つ呼び出し元をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_11.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, 呼び出し元である SelectionTool クラスの mousePressed(MouseEvent) メソッドを見ています.<br>
+                ここで, 変数ビュー上で「呼び出し前」を開いて引数と, this を開いてフィールド dragTracker のIDをそれぞれ確認してください.<br>
+                すると, 先ほどの DefaultDragTracker クラスのインスタンス (id = 758826749) を, DelegationSelectionTool クラスの<br>
+                インスタンス (id = 599587451) のフィールド dragTracker が参照していることが確認できます.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_12.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ソースコードを見ると, 278行目で呼び出されている getDragTracker() メソッドの戻り値をいったんローカル変数 newTracker に代入しておいてから,<br>
+                289行目で setTracker(Tool) メソッドに引数として渡していることが確認できます.<br>
+                ここで, ステップオーバーを2回押して, 実際に289行目に止まることを確認し, ステップインを2回押して, setTracker() メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_13.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                SelectionTool クラスの setTracker(Tool) メソッドに入りました.<br>
+                ここでは, ステップオーバーを4回押して301行目まで進めてください.<br>
+                そのあと, 変数ビュー上で this を開くと, フィールド tracker の値が 仮引数 newTracker と同じ値に更新されていることがわかります.<br>
+                これを確認したら, ステップリターンを1回押して呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_14.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_15.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの呼び出し先から戻ってきたことで, 現在は SelectionTool クラスの mousePressed(MouseEvent) メソッドの291行目にいます.<br>
+                ここでは, ステップインを3回押して, DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_16.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドに入りました.<br>
+                ここで, 変数ビュー上で this を開いて, フィールド anchorFigure (id = 1952912699) と this (id = 758826749) のIDを確認してください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_17.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                呼び出しスタック上で呼び出し元をクリックして戻ってください.<br>
+                なお, 呼び出しスタック上では呼び出し元の行番号が0になっていますが, 実際には291行目にいることに注意してください.<br>
+                ソースコード上で270行目～291行目が見えるようにスクロールしてください.<br>
+                ここからはローカル変数 figure の値がどこから来たのかを見ていきます.<br>
+                ローカル変数 figure にカーソルを入れ, この figure に代入された箇所を探していきます.<br>
+                ローカル変数 figure の宣言は234行目にあるため, ここではその次の行である235行目にブレークポイントを入れてください.<br>
+                235行目にブレークポイントを入れたら, ブレークポイントビュー上の「ブレークポイントをEclipseから取り入れる」アイコンを押してください.<br>
+                そのあと, ブレークポイントビュー上で 「218行目 DefaultDragTracekr.setDraggedFigure(Figure)」のブレークポイントのチェックを外してください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_18.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_19.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったんデバッグ実行を終了してから, もう一度デバッグ実行してください.<br>
+                すると, まずは DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目に止まります.<br>
+                ここで, 再開ボタンを1回押すと, 235行目に止まることが確認できます.<br>
+                このあと, 実際に実行時点がどのように移り変わっていくのかを確認していきます.<br>
+                再開ボタンを1回押すと, 再び235行目に止まることが確認でき, それからもう一度再開ボタンを押すと今度は2回目の780行目に止まることが確認できます.<br>
+            </p>
+            <p class = "explanation">
+                いったんデバッグ実行を終了してから, もう一度デバッグ実行してください.<br>
+                そのあと, 再開ボタンを2回押して, 235行目の2回目の実行にまで進んでください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_20.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ローカル変数 figure に値が代入された時点がどこなのかを見ていきます.<br>
+                ここでは, ステップオーバーを8回押して, 270行目にまで進んでください.<br>
+                270行目では, ローカル変数 view が参照しているインスタンスに対して findFigure(Point) メソッドが呼び出され,<br>
+                その戻り値がローカル変数 figure に代入されていることがわかります.<br>
+                ここで, いったんステップオーバーを3回実行して, この戻り値の代入のあとに別の時点で figure が更新されることなく,<br>
+                278行目で getDragTracker(Figure) メソッドの引数として渡されることを確認してください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_21.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, ローカル変数 figure に値を代入した箇所がわかりました.<br>
+                ここで, いったんデバッグ実行を終了してから, 再びデバッグ実行してください.<br>
+                まずは DefaultDrawingViewクラスの addToSelection(Figure) メソッドの780行目で止まるので, 再開ボタンを2回押して235行目の2回目の実行にまで進んでください.<br>
+                そのあと, ステップオーバーを8回押して270行目にまで進み, ステップインを3回押して findFigure(Point) メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_22.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの findFigure(Point) メソッドに入りました.<br>
+                ここでは, ステップインを2回押して, getDrawing() メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_23.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの getDrawing() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DefaultDrawingView クラスのインスタンス (id = 150367587) の<br>
+                フィールド drawing が QuadTreeDrawing クラスのインスタンス (id = 1583174451) を参照していることがわかります.<br>
+                これを確認したら, ステップリターンを1回押して呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_24.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの findFigure(Point) メソッドに戻ってきました.<br>
+                ソースコードを見ると, 先ほどの getDrawing() メソッドで取得してきた QuadTreeDrawing クラスのインスタンスに対して<br>
+                findFigure(Point2D$Double) メソッドが呼び出されていることが確認できます.<br>
+                次は, ステップインを1回押して, viewToDrawing(Point) メソッドの中に入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_25.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの viewToDrawing(Point) メソッドに入りました.<br>
+                そのままステップリターンを1回押して呼び出し元に戻ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_26.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの findFigure(Point) メソッドに戻ってきました.<br>
+                ステップインを1回押して QuadTreeDrawing クラスの findFigure(Point2D$Double) メソッドの中に入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_27.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                QuadTreeDrawing クラスの findFigure(Point2D$Double) メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, QuadTreeDrawing クラスのインスタンス (id = 1583174451) の<br>
+                フィールド quadTree が QuadTree クラスのインスタンス (id = 808853315) を参照していることがわかります.<br>
+                これを確認したら, ステップインを3回押して, QuadTree クラスの findContains(Point2D$Double) メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_28.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                QuadTree クラスの findContains(Point2D$Double) メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, QuadTree クラスのインスタンス (id = 808853315) のフィールド root が<br>
+                QuadTree クラスの内部クラスである QuadNode クラスのインスタンス (id = 2120356010) を参照していることがわかります.<br>
+                また, ソースコードを見ると, 82行目で生成された HashSet がローカル変数 result に代入されたあと, <br>
+                83行目ではいったん呼び出し先に引数として渡され, 最終的には89行目で戻り値として返されていることが確認できます.<br>
+                ここでは, ステップオーバーを1回押したあと, ステップインを2回押して QuadNode クラスの findContains(Point2D$Double, HashSet) メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_29.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                QuadNode クラスの findContains(Point2D$Double, HashSet) メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, QuadNode クラスのインスタンス (id = 2120356010) の<br>
+                フィールド objects が HashMap のインスタンスを参照していることがわかります.<br>
+                また, ソースコードを見ると, 224行目の拡張for文でこの HashMap から取り出してきたキー側の要素を, <br>
+                226行目で仮引数 result によって参照されているHashSet のインスタンスに追加していることが確認できます.<br>
+                ここでは, ステップオーバーを3回押して226行目にまで進んでください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_30.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, 現在は226行目にいます.<br>
+                ここでは, ステップインを2回押してください.<br>
+                そのあと, 変数ビュー上の「呼び出し前」 (HashSet.add(Object) の呼び出し前) を開き, 引数のIDを確認してください.<br>
+                すると, RectangleFigure クラスのインスタンス (id = 1952912699) が引数として渡されており,<br>
+                それが 仮引数 result によって参照されているHashSet のインスタンスに追加されることがわかります.<br>
+                これを確認したら, ステップオーバーを4回押して呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_31.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                呼び出し元である QuadTree クラスの findContains(Point2D$Double) メソッドに戻ってきました.<br>
+                ここで, ステップオーバーを1回押して, ローカル変数 result にそれ以上何も追加されずに<br>
+                そのまま89行目の return result まで進むことを確認してください.<br>
+                これを確認したら, ステップオーバーを1回押して呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_32.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_33.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                呼び出し元である QuadTreeDrawing クラスの findContains(Point2D$Double) メソッドに戻ってきました.<br>
+                ここでは, ステップオーバーを2回押して130行目にまで進めてください<br>
+                ここで, 変数ビュー上の「呼び出し後」 (Iterator.next() の呼び出し後) を開いて戻り値のIDを確認してください.<br>
+                すると, 先ほどの RectangleFigure クラスのインスタンス (id = 1952912699) を取得していることがわかります.<br>
+                これを確認したら, 呼び出しスタック上で2つ呼び出し元をクリックしてください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_34.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, 呼び出し元である SelectionTool クラスの mousePressed(MouseEvent) メソッドの270行目を見ています.<br>
+                ここで, ステップオーバーを1回押して271行目に進んでください.<br>
+                そのあと, 変数ビュー上の「呼び出し後」を開いて戻り値のIDを確認してください.<br>
+                すると, 実際に戻り値として先ほどの RectangleFigure クラスのインスタンス (id = 1952912699) が返されていることが確認でき,<br>
+                したがって, その値がローカル変数 figure に代入されていることがわかります.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_35.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここからは, ローカル変数 view の値がどこから来たのかを見ていきます.<br>
+                ソースコード中のローカル変数 view にカーソルを入れて view に代入している箇所を探していきます.<br>
+                今回は, 228行目が該当するのでブレークポイントを入れ, ブレークポイントビュー上の「ブレークポイントをEclipseから取り入れる」アイコンを押してください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_36.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったんデバッグ実行を終了してから, 再びデバッグ実行してください.<br>
+                まずは, DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目に止まります.<br>
+                ここで, 再開ボタンを1回押すと, 今度は SelectionToolクラスの mousePressed(MouseEvent) メソッドの228行目に止まります.<br>
+                さらに, 現在の実行時点がどのように移り変わっていくかを確認するために再開ボタンを押していくと,<br>
+                現在の実行が235行目 → 228行目 → 235行目と移っていくことが確認できます.<br>
+            </p>
+            <p class = "explanation">
+                いったんデバッグ実行を終了してから, 再びデバッグ実行してください.<br>
+                そのあと, 再開ボタンを3回押して, 228行目の2回目の実行にまで進んでください.<br>
+                ここで, ステップインを1回押して, getView() メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_37.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                AbstractTool クラスの getView() メソッドの中に入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DelegationSelectionTool クラスのインスタンス(id = 599587451) の<br>
+                フィールド editor が DefaultDrawingEditor クラスのインスタンス (id = 1859859960) を参照していることがわかります.<br>
+                これを確認したら, ステップインを3回押して getActiveView() メソッドの中に入ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_38.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingEditor クラスの getActiveView() メソッドの中に入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DefaultDrawingEditor クラスのインスタンス (id = 1859859960) の<br>
+                フィールド activeView が DefaultDrawingView クラスのインスタンス (id = 150367587) を参照していることがわかります.<br>
+                これを確認したら, 呼び出しスタック上で2つ呼び出し元をクリックして戻ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_39.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                呼び出し元である SelectionTool クラスの mousePressed(MouseEvent) メソッドに戻ってきました.<br>
+                ここで課題B2は終了です. <font color="red">時間計測を終了</font>してください.<br>
+                また, 終了アイコンを押して, デバッグ実行を終了しておいてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_40.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_41.png" class = "threeQuartersSize"></div>
+            </p>
+            <hr>
+            <p>
+                課題B2の機能理解が終了しましたら, 以下のアンケートにお答えください.
+                <div><a href = "https://docs.google.com/forms/d/e/1FAIpQLSeddofr2WwcWbQkl1-TX1SQSjKVc_ulZRa4USNpeUH7Hs1azw/viewform" target = "_blank">アンケート回答</a></div>           
+            </p>
+        <a href="JHotDraw2_Forward_Delta.html">次へ</a>
+        </p>
+    </body>
+</html>

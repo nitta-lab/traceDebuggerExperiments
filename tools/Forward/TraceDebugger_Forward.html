@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>トレースデバッガ (順方向)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../prettify.css">
+        <script type="text/javascript">
+            function init(param) {
+                var course = "A";
+                if (param) {
+                    var c = getParam('course', param);
+                    if (c) course = c;
+                }
+                var next = document.getElementById("next");
+                next.href = "../Reverse/TraceDebugger_Reverse.html?course=" + course;
+                var ec2 = document.getElementById("ec2");
+                ec2.href = "../../ec2/ConnectToEC2.html?course=" + course;
+            }
+
+            function getParam(name, url) {
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+        </script>
+    </head>
+    <body onLoad="init(location.search)">
+        <h1>トレースデバッガ (順方向)</h1>
+
+        <hr>
+        <h2>説明</h2>
+        <p>
+            トレースデバッガでは, 実行時のプログラム内部の情報を時系列に記録したファイルであるトレースファイルを読み込み, その読み込んだトレースを元にデバッグ実行を再現することができます.<br>
+            通常のデバッガと比較するとトレースデバッガには以下のような特徴があります.<br>
+            <ul>
+                <li>トレースを読み込むので, 何度でも同じ実行を再現できる.</li>
+                <li>操作の情報や画面の情報は残っていないので, その実行でユーザーがアプリケーションをどのように操作し, アプリケーションでどんな画面が表示されたかはわからない.</li>
+                <li>オブジェクトIDがトレースに記録されているため, 何回実行しても同一オブジェクトのIDは変わらない.</li>
+                <li>全ての行をトレースに記録しているわけではないので, ステップ実行の際に途中の行を飛ばすことがある.</li>
+                <li>逆に部分的には一行よりも細かい単位で記録しているので, 一行よりも細かい単位でのステップ実行も可能である.</li>
+                <li>ローカル変数の値はトレースに記録されていないため表示されない.</li>
+            </ul>
+        </p>
+        <hr>
+        <p>
+            以降の操作はEC2インスタンスにログインし, Eclipseを起動した上で行ってください.
+            EC2インスタンスへのログイン方法については<a id="ec2" href="../../ec2/ConnectToEC2.html" target="_blank">こちら</a>です.
+        </p>
+
+        <p>
+            <p class = "explanation">
+                まずは, ワークスペース上の TraceDebuggerTest プロジェクトを開き, D.java の6行目と E.java の7行目にブレークポイントを入れてください.<br>
+                <div class = "image"><img src = "./images/Breakpoint_TestD_AWS.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Breakpoint_TestE_AWS.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                メニューバーの ウィンドウ → パースペクティブ → パースペクティブを開く → その他... → トレースデバッガ(順方向) でトレースデバッガのパースペクティブを開いてください.<br>
+                <div class = "image"><img src = "./images/OpenPerspective.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/OpenPerspective_Forward_1.png" class = "quarterSize"></div>
+            </p>
+            <p class = "explanation">
+                実際に「トレースデバッガ(順方向)」のパースペクティブを開くと下図のような状態になります.<br>
+                このパースペクティブは4つのビューで構成されており, 左上が呼び出しスタックビュー, 右上が変数ビュー, 左下がエディタ, 右下がブレークポイントビューになっています.<br>
+                <div class = "image"><img src = "./images/OpenPerspective_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                このデバッガは, プログラムを実際に実行した際に収集したトレースファイルを読み込むことで, トレース上でデバッグ実行を再現できるものです.<br>
+                まずは, こちら側で事前に用意しておいたトレースファイルを読み込んでいただきます.<br>
+                右下にあるブレークポイントビューのフォルダアイコンをクリックすると, ファイル選択のダイアログが開くので,
+                トレースファイル(C:\Users\userXX\runtime-EclipseApplication\TraceDebuggerTest\test.trace)を選択すると読み込むことができます.<br>
+                <div class = "image"><img src = "./images/OpenTraceFile_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/OpenTraceFile_Forward_2.png" class = "halfSize"></div>
+            </p>
+            <p class = "explanation">
+                トレースファイルを読み込んだら, 次はこのデバッガ上でデバッグ実行するために必要なブレークポイントを設定します.<br>
+                <!--まずは, デバッグ実行を一時停止したい行に対して, 普通のデバッガを利用する際と同様の手順で Eclipse 標準のブレークポイントを入れていきます.<br>-->
+                <!--ここでは, TraceDebuggerTest プロジェクトの中の D.java の6行目と, E.java の7行目にブレークポイントを入れてください．<br>-->
+                <!--それらのブレークポイントを入れ終わったら, -->
+                D.java の6行目と E.java の7行目にブレークポイントが入ってることを確認したら, <br>
+                ブレークポイントを右下にあるブレークポイントビューの「ブレークポイントをEclipseから取り入れる」アイコンをクリックします.<br>
+                すると, ブレークポイントビュー上に, トレースデバッガ専用のブレークポイントが生成されます.<br>
+                ただし, 読み込んだトレースファイル上に記録されていない行のブレークポイントは取り込まれません.<br>
+                <div class = "image"><img src = "./images/ImportBreakpoint_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/ImportBreakpoint_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ブレークポイントを生成したら, 右下のブレークポイントビューの「デバッグ」アイコンをクリックすると, トレースデバッガのデバッグ実行が開始されます.<br>
+                最初は, 有効なブレークポイントが入っている行のうち, トレースの時系列上で最初に遭遇する行まで実行が進み, そこで実行が一時停止します.<br>
+                ここでは, D クラスの passB(B) メソッドの6行目が該当しているため, そこまで実行が進んだ状態で一時停止しています.<br>
+                <div class = "image"><img src = "./images/Debug_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Debug_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                デバッグ実行中の状態で, 右下のブレークポイントビューの「終了」アイコンをクリックすると, デバッグ実行が停止します.<br>
+                <div class = "image"><img src = "./images/Terminate_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Terminate_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                再びデバッグアイコンをクリックしてデバッグ実行し, D.java の6行目で一時停止している状態にしてください.<br>
+                一時停止の状態で, 右下のブレークポイントビューの「再開」アイコンをクリックすると, 有効なブレークポイントが入っている行のうち,<br>
+                現在の実行時点以降で最初に遭遇する行にまで実行が進み, そこで実行が再び一時停止します.<br>
+                もし, 該当するブレークポイントがなかった場合は, そのままデバッグ実行が終了します.<br>
+                ここでは, E クラスの setC(C) メソッドの7行目が該当しているため, そこまで実行が進んだ状態で一時停止します.<br>
+                <div class = "image"><img src = "./images/Resume_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Resume_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったん終了アイコンを押してデバッグ実行を終了したあと, 再びデバッグアイコンをクリックしてデバッグ実行し, D.java の6行目で一時停止している状態にしてください.<br>
+                左上の呼び出しスタックビューには, 現在一時停止しているメソッドをトップとしたメソッド呼び出し列のスタックが表示されています.<br>
+                表示されているメソッドシグ二チャをクリックすることで, 呼び出し元のスタックフレームや呼び出し先のスタックフレームを見ることができ, エディタに表示されているソースコードも連動して切り替わります.<br>
+                <div class = "image"><img src = "./images/CallStack_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/CallStack_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                もう一度, 呼び出しスタックビュー上のスタックトップにある「D.passB(B) 行: 6」を選択し, エディタ上で D.java が開いている状態にしてください.<br>
+                トレースデバッガでは, トレースファイルにステートメント単位で記録された実行時情報を元に, 実行を少しずつ進めていくことができます.<br>
+                ここで, ステートメントは行よりも細かい単位であることに注意してください.<br>
+                右下のブレークポイントビューの「ステップオーバー」アイコンをクリックすると, 実行を行単位で進めます.<br>
+                なお, 呼び出し先のメソッドがあったとしても, その呼び出し先のメソッドに入ることはありません.<br>
+                ここでは, ステップオーバーによって, D クラスの passB(B) メソッドの6行目から7行目へと実行を進めます.<br>
+                <div class = "image"><img src = "./images/StepOver_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/StepOver_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                右下のブレークポイントビューの「ステップイン」アイコンをクリックすると, 実行をステートメント単位で進め,<br>
+                呼び出し先のメソッドがある場合はその呼び出し先のメソッドに入ります.<br>
+                ここでは, ステップインによって, 呼び出し先である B クラスの getC() メソッドへ入っていきます.<br>
+                <div class = "image"><img src = "./images/StepInto_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/StepInto_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                右下のブレークポイントビューの「ステップリターン」アイコンをクリックすると, 呼び出し元のメソッドに復帰するまで実行を進めたうえで,<br>
+                その呼び出し元のメソッド内で次のステートメントにまで進めます.<br>
+                ここでは, ステップリターンによって, 呼び出し元のメソッドである D クラスの passB(B) メソッドに復帰し,<br>
+                呼び出し元では B.getC() の次のメソッド呼び出しステートメントである E.setC(C) の直前にまで実行を進めます.<br>
+                <div class = "image"><img src = "./images/StepReturn_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/StepReturn_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったん終了アイコンをクリックしてデバッグ実行を終了したあと, 再びデバッグアイコンをクリックしてデバッグ実行し, D.java の6行目で一時停止している状態にしてください.<br>
+                そのあと, ステップオーバーを1回押して7行目にまで進んだ状態にしてください.<br>
+                右下のブレークポイントビューの「ステップネクスト」アイコンをクリックすると, 実行をステートメント単位で進めます.<br>
+                「ステップイン」とは違い, こちらは呼び出し先のメソッドがあったとしても, その呼び出し先のメソッドには入ることはありません.<br>
+                「ステップオーバー」では行単位で実行が進んでしまいますが, 「ステップネクスト」ではより細かいステートメント単位で同一メソッド実行内を進むことができます.<br>
+                ここでは, ステップネクストによって, 現在のメソッド呼び出しステートメントである B.getC() の呼び出し先には入らずに, <br>
+                そのまま次のメソッド呼び出しステートメントである E.setC(C) の直前にまで実行を進めます.<br>
+                <div class = "image"><img src = "./images/StepNext_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/StepNext_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                いったん終了アイコンをクリックしてデバッグ実行を終了したあと, 再びデバッグアイコンをクリックしてデバッグ実行し, D.java の6行目で一時停止している状態にしてください.<br>
+                右上の変数ビューでは, 現在のスタックフレームから見える仮引数やthisの値(値がオブジェクトへの参照である場合はそのクラス名とID)を確認できます.<br>
+                値がオブジェクトへの参照である場合は, 参照先オブジェクト内部のフィールドの値も開いて確認することができます. <br>
+                ここでは, thisの内部を見てみましょう.
+                <!-- また, 仮引数やフィールドに別のオブジェクトへの参照が代入されている場合は, 参照先オブジェクトを開くことで,<br>
+                フィールドと参照先のオブジェクトの関係を確認することもできます.<br> -->
+                なお, ローカル変数名とその値は, トレースファイルに記録されていないため表示されないことに注意してください.<br>
+                <div class = "image"><img src = "./images/Variable_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Variable_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                また, 右上の変数ビューでは, 通常のデバッガとは異なり, 以下の特殊なケースの場合にも関連するオブジェクトが表示され, そのクラス名とIDが確認できます.<br>
+                <ul>
+                    <li>フィールド代入の直前 (参照元オブジェクトと参照先オブジェクトが確認できる)</li>
+                    <li>フィールド参照の直後 (参照元オブジェクトと参照先オブジェクトが確認できる)</li>
+                    <li>メソッド呼び出しの直前 (当該メソッドのレシーバのオブジェクトと引数のオブジェクトが確認できる)</li>
+                    <li>メソッド呼び出しの直後 (当該メソッドのレシーバのオブジェクトと戻り値のオブジェクトが確認できる)</li>
+                </ul>
+                ここでは, いったんステップオーバーを1回押して, D.java の7行目で一時停止している状態にしたあと,<br>
+                変数ビュー上の「フィールド参照後」や「呼び出し前」を開き, それぞれに関連するオブジェクトが表示されていることを確認してください.<br>
+                <div class = "image"><img src = "./images/Variable_SP_Forward_1.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/Variable_SP_Forward_2.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                これで, 順方向トレースデバッガの説明は終了です.<br>
+                終了アイコンをクリックしてデバッグ実行を終了した状態にしてください.<br>
+                デバッグ実行が終了していることを確認したら, 右上にあるパースペクティブを右クリックし, 「トレースデバッガ(順方向)」のパースペクティブを閉じてください.<br>
+            </p>
+        </p>
+        <a id="next" href="../Reverse/TraceDebugger_Reverse.html">逆方向トレースデバッガの説明へ進む</a>
+
+    </body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>課題B2 (接近過程抽出)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../../prettify.css">
+    </head>
+    <body>
+        <h1>課題B2 (接近過程抽出)</h1>
+
+        <hr>
+        <h2>接近過程抽出</h2>
+        <p>
+            
+        </p>
+
+        <p>
+            <p class = "explanation">
+                課題B2 (機能理解) の終了直後は下図のような状態でデバッグ実行が終了しているはずです.<br>
+                デバッグ実行が終了していることを確認したら, 右上にあるパースペクティブを右クリックし, いったんパースペクティブを閉じてください.<br>
+                ここでは, 課題B2 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B2 (機能理解) と同等の内容を理解していくことを目指します. <br>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/JHotDraw_2_delta_pre_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここで, 「<font color="red">トレースデバッガ(逆方向)</font>」のパースペクティブを開いてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/JHotDraw_2_delta_pre_04.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                その状態のままで, ブレークポイントビュー上にある「ブレークポイントをEclipseから取り入れる」をクリックしてください.<br>
+                ブレークポイントを取り入れたら, DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目以外のブレークポイントのチェックを外してください.<br>
+                チェックを外したら, デバッグ実行してください.<br>
+                まずは, DefaultDrawingView クラスのインスタンス (id = 150367587) のフィールド selectedFigures が参照している LinkedHashSet のインスタンスに<br>
+                RectangleFigure クラスのインスタンス (id = 1952912699) が追加されるまでの過程を見ていきます.<br>
+                デバッグ実行したら, 再開ボタンを1回押してください.<br>
+                すると, DefaultDrawingView クラスの addToSelection(Figure) メソッド780行目の2回目の実行にまで進みます.<br>
+                ここで, ステップネクストを1回押してください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/JHotDraw_2_delta_pre_08.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/JHotDraw_2_delta_pre_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここで, 変数ビュー上の「呼び出し前」のメソッド名が Set.add(Object) であることを確認してください.<br>
+                それを確認したら, 変数ビュー上の「呼び出し前」を開いて, 引数を右クリックしてください.<br>
+                右クリックすると, ポップアップメニューが出てくるので, 上の方の LinkedHashSet のインスタンスと RectangleFigure の<br>
+                インスタンスを対象とした「オブジェクトの接近過程抽出」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta_pre/JHotDraw_2_delta_pre_11.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                実際に「オブジェクトの接近過程抽出」を実行すると, 下図のような状態になります.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「開始時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程抽出」ビュー上の「参照先側001」から「参照先側004」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_03.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_05.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程抽出」ビュー上の「参照元側001」から「参照元側013」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_06.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_07.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここまでで, DefaultDrawingView クラスのインスタンス (id = 150367587) のフィールド selectedFigures が参照している LinkedHashSet のインスタンスに<br>
+                RectangleFigure クラスのインスタンス (id = 1952912699) が接近する過程を見てきました.<br>
+                抽出した結果を見ると, DefaultDragTracker クラスのインスタンス (id = 758826749) のフィールド anchorFigure に代入されていた<br>
+                RectangleFigure クラスのインスタンスを取得してきていることがわかりましたが, その RectangleFigure クラスのインスタンスの参照が <br>
+                anchorFigure フィールドに代入されるまでの経緯については, この抽出範囲だけではわかりません.<br>
+                そこで, ここからは, DefaultDragTracker クラスのインスタンス (id = 758826749) に RectangleFigure クラスのインスタンス (id = 1952912699) が<br>
+                接近する過程を抽出して見ていきます.<br>
+                まずは, 「オブジェクトの接近過程抽出」ビュー上の「参照先側002」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_10.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, 現在は DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドの109行目にいます.<br>
+                ここで, 変数ビュー上の this を開き, フィールド anchorFigure を右クリックしてください.<br>
+                右クリックすると, ポップアップメニューが出てくるので, 「値の代入時点に飛ぶ」をクリックしてください.<br>
+                すると, 現在の実行時点が DefaultDragTracker クラスの setDraggedFigure(Figure) メソッドの218行目に移ります.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_11.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_12.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, 現在は DefaultDragTracker クラスの setDraggedFigure(Figure) メソッドの218行目にいます.<br>
+                ここで, 変数ビュー上の「フィールド代入前」を開いて, 参照先を右クリックしてください.<br>
+                右クリックすると, ポップアップメニューが出てくるので,「オブジェクトの接近過程抽出」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_13.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                実際に「オブジェクトの接近過程抽出」を実行すると, 下図のような状態になります.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_14.png" class = "threeQuartersSize"></div>         
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「開始時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_15.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程抽出」ビュー上の「参照先側001」から「参照先側036」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_16.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_17.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程抽出」ビュー上の「参照元側001」から「参照元側004」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_18.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_19.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_20.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここまでで, DefaultDragTracker クラスのインスタンス (id = 758826749) に RectangleFigure クラスのインスタンス (id = 1952912699) が接近する過程を見てきました.<br>
+                抽出した結果 (「参照先側022」と「参照先側023」) を見ると, QuadTree#findContents(Point2D$Double) のローカル変数 result が参照している<br>
+                HashSet オブジェクトに追加された RectangleFigure クラスのインスタンスを取得してきていることがわかりましたが, <br>
+                その RectangleFigure クラスのインスタンスが HashSet オブジェクトに追加されるまでの経緯は, この抽出範囲だけではわかりません.<br>
+                そこで, ここからは, そのローカル変数 result に RectangleFigure クラスのインスタンス (id = 1952912699) が追加されるまでの過程を見ていきます.<br>
+                まずは, 「オブジェクトの接近過程抽出」ビュー上の「参照先側028」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_21.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, 現在は QuadTreeDrawing クラスの findFigure(Point2D$Double) メソッドの129行目にいます.<br>
+                ここで, ステップネクストを1回押して130行目にまで進んでください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_22.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_23.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, 現在は QuadTreeDrawing クラスの findFigure(Point2D$Double) メソッドの130行目にいます.<br>
+                ここで, 変数ビュー上の「呼び出し後」のメソッド名が Iterator.next() であることを確認してください.<br>
+                それを確認したら, 変数ビュー上の「呼び出し後」を開いて, 戻り値を右クリックしてください.<br>
+                右クリックすると, ポップアップメニューが出てくるので, 「オブジェクトの追加時点に飛ぶ」をクリックしてください.<br>
+                すると, 現在の実行時点が QuadTree$QuadNode クラスの findContains(Point2D$Double, HashSet) メソッドの226行目に移ります.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_24.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_25.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, 現在は QuadTree$QuadNode クラスの findContains(Point2D$Double, HashSet) メソッドの226行目にいます.<br>
+                ここで, 変数ビュー上の「呼び出し前」のメソッド名が HashSet.add(Object) であることを確認してください.<br>
+                それを確認したら, 変数ビュー上の「呼び出し前」を開いて, 引数を右クリックしてください.<br>
+                右クリックすると, ポップアップメニューが出てくるので, 上の方の HashSet のインスタンスと RectangleFigure の<br>
+                インスタンスを対象とした「オブジェクトの接近過程抽出」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_26.png" class = "threeQuartersSize"></div>         
+            </p>
+            <p class = "explanation">
+                実際に「オブジェクトの接近過程抽出」を実行すると, 下図のような状態になります.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_27.png" class = "threeQuartersSize"></div>         
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「開始時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_28.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程抽出」ビュー上の「参照先側001」から「参照先側013」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_29.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_31.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程抽出」ビュー上の「参照元側001」から「参照元側004」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_33.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_35.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_36.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここまでで, QuadTree#findContents(Point2D$Double) のローカル変数 result が参照している HashSet のインスタンスに<br>
+                RectangleFigure クラスのインスタンス (id = 1952912699) が追加されるまでの過程を見てきました.<br>
+                ここで, 課題B2の接近過程抽出は終了です.<br>
+                「オブジェクトの接近過程」ビューを全て閉じ, そのあとデバッグ実行を終了してください.<br>
+                <!--デバッグ実行を終了したら, この「トレースデバッガ(逆方向)」のパースペクティブを閉じてください.<br>-->
+                <div class = "image"><img src = "./images/images_problem2_delta/JHotDraw_2_delta_38.png" class = "threeQuartersSize"></div>
+            </p>
+            <hr>
+            <p>
+                課題B2の接近過程抽出が終了しましたら, 以下のアンケートにお答えください.
+                <div><a href = "https://docs.google.com/forms/d/e/1FAIpQLSf5YK-v1zrm7SE0sqoG9WcxvEYx1mpb21yHIk3lGtrLdR4HLQ/viewform" target = "_blank">アンケート回答</a></div>           
+            </p>
+        <a href="../../ArgoUML_Reverse/DescriptionArgoUML.html">次へ</a>
+        </p>
+    </body>
+</html>

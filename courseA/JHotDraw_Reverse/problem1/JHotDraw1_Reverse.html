@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>課題A3 (機能理解)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../../prettify.css">
+    </head>
+    <body>
+        <h1>課題A3 (機能理解)</h1>
+        <p>
+            課題A3では, JHotDrawの図形の移動機能について見ていきます.<br>
+            具体的には,
+            <blockquote>
+                「選択された図形がJHotDrawのシステム内部でどのように管理され，図形移動機能の実行によってどのように取り出されて，移動していくか?」
+            </blockquote>
+            を理解することを目指して, 以下のようにトレースデバッガを操作していきます.<br>
+            ワークスペース内のjhotdraw7が、JHotDrawを構成するプロジェクトです。
+        </p>
+
+        <hr>
+        <h2>実行手順</h2>
+        <p>
+            <ol>
+            <!--
+                <li class = "explanation">
+                    デスクトップのEclipseを起動し, 指定されたワークスペースを開いてください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/JHotDraw_1_pre_01.png" class = "threeQuartersSize"></div>
+                </li>
+            -->
+                <li class = "explanation">
+                    ワークスペース中にあるjhotdraw7プロジェクトを選択し, メニューバーの 検索 → Java で DefaultDragTracker というタイプの宣言を検索してください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/SearchJava_JHotDraw_AWS_pre.png" class = "threeQuartersSize"></div>
+                    <div class = "image"><img src = "./images/images_problem1_pre/SearchJava_JHotDraw_AWS.png" class = "halfSize"></div>
+                </li>
+                <li class = "explanation">
+                    DefaultDragTrackerクラスのソースファイルを開いて159行目 (DefaultDragTracker#mouseDragged(MouseEvent)) にブレークポイントを入れてください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/Breakpoint_JHotDraw_AWS.png" class = "threeQuartersSize"></div>
+                </li>
+                <li class = "explanation">
+                    メニューバーの ウィンドウ → パースペクティブ → パースペクティブを開く → その他 → <font color="red">トレースデバッガ(逆方向)</font> でトレースデバッガのパースペクティブを開いてください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/OpenPerspective_JHotDraw_AWS.png" class = "threeQuartersSize"></div>
+                    <div class = "image"><img src = "./images/images_problem1_pre/OpenPerspective_Reverse_AWS.png" class = "halfSize"></div>
+                </li>
+                <li class = "explanation">
+                    開いたトレースデバッガのパースペクティブ右上のブレークポイントビュー上にあるフォルダアイコン(左から1番目)を<br>
+                    クリックしてトレースファイル (C:\Users\userXX\runtime-EclipseApplication\jhotdraw7\jHotDrawBenchMarkWithMoreStandardClasses.trace) を開いてください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/JHotDraw_1_pre_07.png" class = "threeQuartersSize"></div>
+                    <div class = "image"><img src = "./images/images_problem1_pre/JHotDraw_1_pre_08.png" class = "halfSize"></div>
+                </li>
+                <li class = "explanation">
+                    トレースファイルの読み込みが終わるまで待ってから, ブレークポイントビュー上にある「ブレークポイントをEclipseから取り入れる」アイコン(左から2番目)を<br>
+                    クリックしてトレースデバッガ用のブレークポイントを作成してください.
+                    <div class = "image"><img src = "./images/images_problem1_pre/JHotDraw_1_pre_09.png" class = "threeQuartersSize"></div>
+                </li>
+                <li class = "explanation">
+                    ブレークポイントビュー上にあるデバッグアイコン(左から3番目)をクリックしてください.<br>
+                    トレースデバッガによるデバッグ実行が起動し, ブレークポイントを入れた位置の行が選択された状態で一時停止します.
+                    <div class = "image"><img src = "./images/images_problem1_pre/JHotDraw_1_pre_10.png" class = "threeQuartersSize"></div>
+                </li>
+            </ol>
+        </p>
+
+        <hr>
+        <h2>機能理解</h2>
+        <p>
+            Figure クラスは図形を表す JHotDraw のクラスです.<br>
+            また, RectangleFigure クラスは矩形を表す JHotDraw のクラスで, Figure クラスの子孫クラスにあたります.<br>
+            ブレークポイントを置いた行は、図形を移動するたびに実行されます.
+        </p>
+
+        <p>
+            <p class = "explanation">
+                先ほどの実行手順にしたがって進めていくと, 下図のように DefaultDragTracker クラスの<br>
+                mouseDragged(MouseEvent) メソッド内の159行目で一時停止している状態になっているはずです.<br>
+                この状態になっていれば, <font color="red">ここから時間計測を開始</font>してください. 時間計測はできる限り，1分以内の単位での計測をお願いします.<br>
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDragTracker クラスの mouseDragged(MouseEvent) メソッドの159行では,<br>
+                ローカル変数 f で参照されている RectangleFigure クラスのインスタンスに対してメソッドが呼び出されていることが確認できます.<br>
+                まずは, この f の値がどこから来たのかを見るために, ステップバックオーバーを2回押して157行目の拡張for文まで戻ってください.
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどのステップバックオーバーの実行によって157行目まで戻ってきました.<br>
+                ここでは, まずステップネクストを1回押してください.<br>
+                そのあと, 変数ビュー上にある「呼び出し後」 (Iterator.next() の呼び出し後) を開くと, <br>
+                戻り値として RectangleFigure クラスのインスタンス (id = 1952912699) が返されていることがわかります.
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ソースコードを見ると, RectangleFigure クラスのインスタンス (id = 1952912699) は DefaultDragTracker クラスのインスタンス (id = 758826749) の<br>
+                フィールド transFormedFigures が参照しているセットから取得していることがわかります.<br>
+                次は, この transFormedFigures に RectangleFigure クラスのインスタンスがどの実行時点で追加されたのかを見ていきます.<br>
+                ここで, 変数ビュー上の「呼び出し後」のメソッド名が Iterator.next() であることを確認してください.<br>
+                それを確認したら, 変数ビュー上で開いている「呼び出し後」の中にある戻り値を右クリックして「オブジェクトの追加時点に飛ぶ」を選択してください.<br>
+                実行すると, オブジェクトの追加時点である DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドの118行目にまで現在の実行時点が遡ります.
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_04.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの操作によって, DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドの118行目に現在の実行時点が移りました.<br>
+                この118行目では, ローカル変数 f の値が フィールド transFormedFigures が参照している HashSet のインスタンスに追加されていることが確認できます.<br>
+                ここで, 「トレースデバッガ」パースペクティブの右下にある「実行時点の登録」ビューの追加ボタンをクリックしてください.<br>
+                そうすると, 現在の実行時点がこのビュー上に登録されます.
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_05.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                この f の値がどこから来たのかを見るために, ステップバックオーバーを2回押して116行目の拡張for文に戻ってください.<br>
+                ここで, ソースコードを見ると, この116行目の拡張for文ではローカル変数 view が参照しているインスタンスに対して getSelectedFigures() メソッドが呼び出され,<br>
+                その戻り値として返されたコレクションから先ほどのローカル変数 f の値を取得していることが確認できます.<br>
+                これを確認したら, この戻り値がどうなっているのかを見るために, ステップバックインを3回押して getSelectedFigures() メソッドの中に後ろから入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_06.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの getSelectedFigures() メソッドに入りました.<br>
+                ここで, ソースコードを見ると, Collections クラスの static メソッドである unmodifiableSet(Set) が呼び出されており,<br>
+                その引数として フィールド selectedFigures が渡されていることが確認できます.<br>
+                この Collections#unmodifiableSet(Set) は引数として渡されたセットを Collections$UnmodifiableSet のインスタンスに変換して返すメソッドです. <br>
+                また, 変数ビュー上の「呼び出し後」および this を開くと, このフィールド selectedFigures は DefaultDrawingView クラスの<br>
+                インスタンス (id = 150367587) のフィールドであることがわかります.<br>
+                これを確認したら, ステップバックリターンを1回押して呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_07.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの結果から, RectangleFigure クラスのインスタンス (id = 1952912699) は <br>
+                DefaultDrawingView クラスのインスタンス (id = 150367587) が LinkedHashSet の要素として保持していることがわかりました.<br>
+                次は, この DefaultDrawingView クラスのインスタンスがどこから来たのかを見ていきます.<br>
+                ここでは, ステップバックオーバーを5回押して98行目に戻ってください.<br>
+                ソースコードを見ると, getView() メソッドの戻り値を ローカル変数 view に代入していることが確認できます.<br>
+                ここで, この戻り値がどうなっているのかを確認するために, ステップインを1回押してこのメソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_08.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                AbstractTool クラスの getView() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DefaultDragTracker クラスのインスタンス (id = 758826749) の editor フィールドが<br>
+                DefaultDrawingEditor クラスのインスタンス (id = 1859859960) を参照していることがわかります.<br>
+                これを確認したら, ステップインを3回押して DefaultDrawingEditor クラスの getActiveView() メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingEditor クラスの getAcitiveView() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DefaultDrawingEditor クラスのインスタンス (id = 1859859960) の<br>
+                フィールド activeView が DefaultDrawingView クラスのインスタンス (id = 150367587) を参照していることがわかります.
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_10.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの結果から, DefaultDrawingView クラスのインスタンス (id = 150367587) は<br>
+                DefaultDrawingEditor クラスのインスタンス (id = 1859859960) が参照していることがわかりました.<br>
+                呼び出しスタック上で2つ呼び出し元である DefaultDragTrackerクラスの mousePressed(MouseEvent) メソッドをクリックしてください.<br>
+                ここで, 課題A3は終了です. <font color="red">時間計測を終了</font>してください.<br>
+                なお, デバッグ実行は終了せずにそのままの状態にしておいてください.<br>
+                <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_11.png" class = "threeQuartersSize"></div>
+            </p>
+        </p>
+        <hr>
+        <p>
+            課題A3の機能理解が終了しましたら, 以下のアンケートにお答えください.
+            <div><a href = "https://docs.google.com/forms/d/e/1FAIpQLScEQkbVbQxmluu8KOTQYjASZU1CiPkNBoEb0nlYPpXMKjBfAA/viewform" target = "_blank">アンケート回答</a></div>           
+        </p>
+        <a href="JHotDraw1_Reverse_Delta.html">次へ</a>
+    </body>
+</html>

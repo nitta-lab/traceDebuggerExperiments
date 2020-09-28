@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>課題B1 (接近過程抽出)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../../prettify.css">
+    </head>
+    <body>
+        <h1>課題B1 (接近過程抽出)</h1>
+
+        <hr>
+        <h2>接近過程抽出</h2>
+        <p>
+            
+        </p>
+
+        <p>
+            <p class = "explanation">
+                課題B1 (機能理解) の終了直後は下図のような状態でデバッグ実行が終了しているはずです.<br>
+                デバッグ実行が終了していることを確認したら, 右上にあるパースペクティブを右クリックし, いったん「トレースデバッガ(順方向)」のパースペクティブを閉じてください.<br>
+                ここでは, 課題B1 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B1 (機能理解) と同等の内容を理解していくことを目指します. <br>
+                <div class = "image"><img src = "./images/images_problem1_delta_pre/JHotDraw_1_delta_pre_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここで, 「<font color="red">トレースデバッガ(逆方向)</font>」のパースペクティブを開いてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta_pre/JHotDraw_1_delta_pre_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                その状態のままで, ブレークポイントビュー上にある「ブレークポイントを取り入れる」をクリックしてください.<br>
+                ブレークポイントを取り入れたら, ブレークポイントビュー上で下記2つのブレークポイントのチェックを外してください.<br>
+                <ol>
+                    <li>&nbsp;&nbsp;98行目 DefaultDragTracker.mousePressed(MouseEvent)</li>
+                    <li>116行目 DefaultDragTracker.mousePressed(MouseEvent)</li>
+                </ol>
+                そのあと, デバッグ実行してください.<br>
+                デバッグ実行したら, 再開を1回押して118行目の2回目の実行にまで進んでください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta_pre/JHotDraw_1_delta_pre_06.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドの118行目にいます.<br>
+                まずは, DefaultDragTracker クラスのインスタンス (id = 758826749) のフィールド transformedFigures が参照している HashSet のインスタンスに<br>
+                RectangleFigure クラスのインスタンス (id = 1952912699) が追加されるまでの過程を抽出して見ていきます.<br>
+                ここで, ステップネクストを2回押してください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta_pre/JHotDraw_1_delta_pre_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここで, 変数ビュー上の「呼び出し前」のメソッド名が HashSet.add(Object) であることを確認してください.<br>
+                それを確認したら, 変数ビュー上の「呼び出し前」を開いて, 引数を右クリックしてください.<br>
+                右クリックすると, ポップアップメニューが出てくるので, 上の方の HashSet のインスタンスと RectangleFigure のインスタンスを<br>
+                対象とした「オブジェクトの接近過程抽出」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta_pre/JHotDraw_1_delta_pre_10.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                実際に「オブジェクトの接近過程抽出」を実行すると, 下図のような状態になります.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/JHotDraw_1_delta_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「開始時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/JHotDraw_1_delta_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程抽出」ビュー上の「参照先側001」から「参照先側020」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/JHotDraw_1_delta_04.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem1_delta/JHotDraw_1_delta_06.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程抽出」ビュー上の「参照元側001」から「参照元側002」までを順番にクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/JHotDraw_1_delta_07.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem1_delta/JHotDraw_1_delta_08.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの接近過程」ビュー上の「参照時点」をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/JHotDraw_1_delta_10.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここまでで, DefaultDragTracker クラスのインスタンス (id = 758826749) のフィールド transformedFigures が参照している<br>
+                HashSet のインスタンスに, RectangleFigure クラスのインスタンス (id = 1952912699) が追加されるまでの過程を見てきました.<br>
+                ここで, 課題B1の接近過程抽出は終了です.<br>
+                「オブジェクトの接近過程」ビューを全て閉じ, そのあとデバッグ実行を終了してください.<br>
+                デバッグ実行を終了したら, この「トレースデバッガ(逆方向)」のパースペクティブを閉じてください.<br>
+                <div class = "image"><img src = "./images/images_problem1_delta/JHotDraw_1_delta_11.png" class = "threeQuartersSize"></div>
+            </p>
+            <hr>
+            <p>
+                課題B1の接近過程抽出が終了しましたら, 以下のアンケートにお答えください.
+                <div><a href = "https://docs.google.com/forms/d/e/1FAIpQLSeNl_V5Dr7QIZEDQfCPGzhyDDgT89BfWc5k4Rp3LUlv2aBGwA/viewform" target = "_blank">アンケート回答</a></div>           
+            </p>
+        <a href="../problem2/JHotDraw2_Forward.html">次へ</a>
+        </p>
+    </body>
+</html>

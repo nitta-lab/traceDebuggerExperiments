@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html lang = "ja">
+    <head>
+        <title>課題A4 (機能理解)</title>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" type = "text/css" href = "../../../prettify.css">
+    </head>
+    <body>
+        <h1>課題A4 (機能理解)</h1>
+        <p>
+            課題A4では, JHotDrawの図形の選択機能について見ていきます.<br>
+            具体的には,
+            <blockquote>
+                「配置された図形がJHotDrawのシステム内部でどのように管理され，図形選択機能の実行によってどのように取り出されて，どのように選択図形として登録されるか?」
+            </blockquote>
+            を理解することを目指して, 以下のようにトレースデバッガを操作していきます.<br>
+            ワークスペース内のjhotdraw7が、JHotDrawを構成するプロジェクトです。
+        </p>
+
+        <hr>
+        <h2>前準備</h2>
+        <p>
+            <p class = "explanation">
+                課題A3 (接近過程抽出) の終了直後は下図のような状態になっているはずです.
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                まずは, ステップバックオーバーを2回押してから, ステップオーバーを1回押してください.<br>
+                ここで, 変数ビュー上の「呼び出し後」のメソッド名が Iterator.next() であることを確認してください.<br>
+                それを確認したら, 変数ビュー上で「呼び出し後」を開いて, 戻り値を右クリックしてください.<br>
+                右クリックするとポップアップメニューが現れるので, 「オブジェクトの追加時点に飛ぶ」を選択してください.
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_05.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「オブジェクトの追加時点に飛ぶ」を選択すると, selectedFigures に この RectangleFigure クラスのインスタンス (id = 1952912699) が追加された時点である<br>
+                DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目にまで現在の実行時点が遡ります.<br>
+                下図の状態になっていれば前準備は終了です.
+                <div class = "image"><img src = "./images/images_problem2_pre/JHotDraw_2_pre_06.png" class = "threeQuartersSize"></div>
+            </p>
+        </p>
+
+        <hr>
+        <h2>機能理解</h2>
+        <p>
+            Figure クラスは図形を表す JHotDraw のクラスです.<br>
+            また, RectangleFigure クラスは矩形を表す JHotDraw のクラスで, Figure クラスの子孫クラスにあたります.<br>
+            現在の実行時点の行は、図形を選択するたびに実行されます.
+        </p>
+
+        <p>
+            <p class = "explanation">
+                先ほどの前準備にしたがって進めていくと, 下図のように DefaultDrawingView クラスの<br>
+                addToSelection(Figure) メソッド内の780行目で一時停止している状態になっているはずです.<br>
+                この状態になっていれば, <font color="red">ここから時間計測を開始</font>してください. 時間計測はできる限り，1分以内の単位での計測をお願いします.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_01.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class= "explanation">
+                まずは,「実行時点の登録」ビューの追加ボタンをクリックして実行時点の登録を行ってください.<br>
+                ここで, ソースコードと変数ビューを見ると, DefaultDrawingView クラスのインスタンス (id = 150367587) のフィールド selectedFigures が参照しているセットへは<br>
+                RectangleFigure クラスのインスタンス (id = 1952912699) が追加されていることがわかります.<br>
+                課題A4では, このオブジェクトの追加に関わっている DefaultDrawingView クラスのインスタンスと RectangleFigure クラスのインスタンスについて見ていきます.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_02.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                まずは RectangleFigure がどこから来たのかを見るために, 呼び出しスタック上で1つ呼び出し元をクリックしてください.<br>
+                ここで, ソースコードを見ると, 先ほど呼び出されていた addToSelection(Figure) メソッドは, ローカル変数 view で参照されているインスタンスに対する呼び出しであり,<br>
+                その実引数としてフィールド anchorFigure の値が渡されていることがわかります.<br>
+                また, 変数ビュー上の this を開くと, このフィールドは DefaultDragTracker クラスのインスタンス (id = 758826749) のフィールドであることがわかります.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_03.png" class = "threeQuartersSize"></div>
+            </p>
+            <p  class = "explanation">
+                ここでは, いったんローカル変数 view の値がどこから来たのかを見ていきます.<br>
+                ステップバックオーバーを4回押して98行目に戻ってください.<br>
+                ソースコードを見ると, getView() メソッドの戻り値を ローカル変数 view に代入していることが確認できます.<br>
+                ここで, この戻り値がどうなっているのかを確認するために, ステップインを1回押して getView() メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_04.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                AbstractTool クラスの getView() メソッドに入りました.<br>               
+                ここで, 変数ビュー上の this を開くと, DefaultDragTracker クラスのインスタンス (id = 758826749)  の editor フィールドが<br>
+                DefaultDrawingEditor クラスのインスタンス (id = 1859859960) を参照していることがわかります.<br>
+                これを確認したら, ステップインを3回押して DefaultDrawingEditor クラスの getAcitiveView() メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_05.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingEditor クラスの getActiveView() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DefaultDrawingEditor クラスのインスタンス (id = 1859859960) の<br>
+                フィールド activeView が DefaultDrawingView クラスのインスタンス (id = 150367587) を参照していることがわかります.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_06.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの結果から, DefaultDrawingView クラスのインスタンス (id = 150367587) は<br>
+                DefaultDrawingEditor クラスのインスタンス (id = 1859859960) が参照していることがわかりました.<br>
+                呼び出しスタック上で2つ呼び出し元である DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドをクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_07.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, 呼び出し元である DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドの98行目を見ています.<br>
+                今までの結果から, DefaultDrawingView クラスのインスタンス (id = 150367587) がどのようにして来たのかがわかりました.<br>
+                ここからは, RectangleFigure クラスのインスタンス (id = 1952912699) がどこから来たのかを見ていきます.<br>
+                ここで, 変数ビュー上の this を開き, その中にある anchorFigure を右クリックしてください.<br>
+                右クリックするとポップアップメニューが現れるので, 「値の代入時点に飛ぶ」を選択してください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_08.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                「値の代入時点に飛ぶ」を選択すると, DefaultDragTracker クラスのインスタンス (id = 758826749) の anchorFigure フィールドに<br>
+                この RectangleFigure クラスのインスタンス (id = 1952912699) への参照が代入された時点である<br>
+                DefaultDragTracker クラスの setDraggedFigure(Figure) メソッドの218行目にまで現在の実行時点が遡ります.<br>
+                まずは, 「実行時点の登録」ビューの追加ボタンをクリックして実行時点の登録を行ってください.<br>
+                ここでは, DefaultDragTracker クラスのフィールド anchorFigure に仮引数 f の値を代入していることが確認できます.<br>
+                仮引数 f の値がどこから来たのかを見るために, 呼び出しスタック上で1つ呼び出し元をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_09.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, 呼び出し元である SelectionTool クラスの getDragTracker() メソッド見ています. <br>
+                ここで 変数ビュー上の 「呼び出し前」および this を開くと, 先ほどの setDraggedFigure (Figure) メソッドが呼び出されている<br>
+                DefaultDragTracker クラスのインスタンス (id = 758826749) は, DelegationSelectionTool クラスのインスタンス (id = 5999587451) の<br>
+                dragTracker フィールドによって参照されていることがわかります.<br>
+                引き続き, 仮引数 f の値がどこから来ているのかを見るために, 呼び出しスタック上でさらに1つ呼び出し元をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_10.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は, 呼び出し元である DelegationSelectionTool クラスの mousePressed(MouseEvent) メソッドを見ています.<br>
+                ここで, ソースコードを見ると, ここではローカル変数 figure の値が実引数として渡されていることが確認できます.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_11.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                今度はこのローカル変数 figure の値がどこから来ているのかを見るために, ステップバックオーバーを3回押して270行目に戻ってください.<br>
+                270行目では, ローカル変数 view で参照されるインスタンスに対して findFigure(Point) メソッドが呼び出され, <br>
+                その戻り値がローカル変数 figure に代入されていることが確認できます.<br>
+                この戻り値がどうなっているのかを確認するために, ステップインでこのメソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_12.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの findFigure(Point) メソッドに入りました.<br>
+                ここで, ソースコードを見ると, このメソッドでは getDrawing() メソッドで取得してきたインスタンスに対して,<br>
+                findFigure(Point2D$Double) メソッドが呼び出され, その戻り値を返していることが確認できます.<br>
+                これを確認したら, ステップインを2回押して, getDrawing() メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_13.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの getDrawing() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DefaultDrawingView クラスのインスタンス (id = 150367587) の<br>
+                フィールド drawing が QuadTreeDrawing クラスのインスタンス (id = 1583174451) を参照していることがわかります.<br>
+                これを確認したら, ステップリターンを1回押して呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_14.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingView クラスの findFigure(Point) メソッドに戻ってきました.<br>
+                ここでは, まずステップネクストを1回押して viewToDrawingPoint(Point) メソッドの呼び出しを飛ばし, <br>
+                それから, ステップインを1回押して QuadTreeDrawing クラスの findFigure(Point2D$Double) メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_15.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_16.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                QuadTreeDrawing クラスの findFigure(Point2D$Double) メソッドに入りました.<br>
+                ここでは, ステップインを3回押して QuadTree クラスの findContains(Point2D$Double) メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_17.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                QuadTree クラスの findContains(Point2D$Double) メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くとQuadTree クラスのインスタンス (id = 808853315) のフィールド root が<br>
+                QuadTree の内部クラス QuadNode クラスのインスタンス (id = 2120356010) を参照していることがわかります.<br>
+                ここでは, ステップオーバーを1回押して83行目に進んだあと, ステップインを2回押して,<br>
+                QuadTree$QuadNode クラスの findContains(Point2D$Double, HashSet) メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_18.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                QuadTree$QuadNode クラスの findContains(Point2D$Double, HashSet) メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, QuadTree$QuadNode クラスのインスタンスの<br>
+                フィールド objects が HashMap のインスタンスを参照していることがわかります.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_19.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここでは, ステップオーバーを3回押して226行目まで進んだあと, ステップネクストを2回押してください.<br>
+                ソースコードを見ると, 224行目の拡張for文で 先ほど確認した HashMap から取得してきた要素を用いて, <br>
+                226行目ではそのうちのキー要素だけを取り出して, それを仮引数 result で参照されている HashSet オブジェクトに追加していることが確認できます.<br>
+                ここで, 変数ビュー上の「呼び出し後」 (Entry.getKey() の呼び出し後) および「呼び出し前」 (HasSet.add(Object) の呼び出し前) を開くと, <br>
+                実際に RectangleFigure クラスのインスタンス (id = 1952912699) を取得してから追加していることを確認できます.<br>
+                これを確認したら, ステップオーバーを4回押して呼び出し元に戻ってください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_20.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                呼び出し元である QuadTree クラスの findContains(Point2D$Double) メソッドの84行目に戻ってきました.<br>
+                ここでは, ステップオーバーを1回押して, このメソッド内ではローカル変数 result に何もオブジェクトが追加されず, <br>
+                89行目の return result に現在の実行時点が移ることを確認してください.<br>
+                これを確認したら, 呼び出しスタック上で1つ呼び出し元をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_21.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_22.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class= "explanation">
+                現在は QuadTreeDrawing クラスの findFigure(Point2D$Double) メソッドを見ています.<br>
+                ここでは, まずステップオーバーを2回押して129行目まで進んでください.<br>
+                129行目で「実行時点の登録」ビューの追加ボタンをクリックして実行時点の登録を行ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_23.png" class = "threeQuartersSize"></div>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_24.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                現在は QuadTreeDrawing クラスの findFigure(Point2D$Double) メソッドの129行目にいます.<br>
+                そのあと, ステップネクストを3回実行すると, 現在の実行時点が130行目に移ります.<br>
+                ここで, 変数ビュー上の「呼び出し後」 (Iterator.next() の呼び出し後) を開き, 戻り値が RectangleFigure クラスの<br>
+                インスタンス (id = 1952912699) であることを確認してください.<br>
+                これを確認したら, 呼び出しスタック上で2つ呼び出し元をクリックしてください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_25.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                ここまでの結果から RectangleFigure クラスのインスタンスに関わる各オブジェクトの関係について, 以下のことがわかりました.<br>
+                <ol>
+                    <li>RectangleFigure クラスのインスタンス (id = 1952912699) は QuadTree の内部クラス QuadNode クラスのインスタンス (id = 2120356010) が参照している.</li>
+                    <li>QuadTree の内部クラス QuadNode クラスのインスタンス (id = 2120356010) は QuadTree クラスのインスタンス (id = 808853315) が参照している.</li>
+                    <li>QuadTree クラスのインスタンス (id = 808853315) は QuadTreeDrawing クラスのインスタンス (id = 1583174451) が参照している.</li>
+                    <li>QuadTreeDrawing クラスのインスタンス (id = 1583174451) は DefaultDrawingView クラスのインスタンス (id = 150367587) が参照している.</li>
+                </ol>
+                ここからは, DefaultDrawingView クラスのインスタンス (id = 150367587) がどこから来たのかを見ていきます.<br>
+                現在は, 呼び出し元である SelectionTool クラスの mousePressed(MouseEvent) メソッドの270行目を見ています.<br>
+                ここで, ソースコードを見ると, この DefaultDrawingView クラスのインスタンスはローカル変数 view で参照されていることが確認できます.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_26.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                このローカル変数 view の値がどこから来たのかを見るために, ステップバックオーバーを10回押して228行目にまで戻ってください.<br>
+                228行目では, ローカル変数 view に getView() メソッドの戻り値を代入していることが確認できます.<br>
+                ここで, この戻り値がどうなっているのかを確認するために, ステップインを1回押して getView() メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_27.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                AbstractTool クラスの getView() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DelegationSelectionTool クラスのインスタンス (id = 599587451) の editor フィールドが<br>
+                DefaultDrawingEditor クラスのインスタンス (id = 1859859960) を参照していることがわかります.<br>
+                これを確認したら, ステップインを3回押して DefaultDrawingEditor クラスの getAcitiveView() メソッドの中に前から入ってください.<br>
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_28.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                DefaultDrawingEditor クラスの getAcitiveView() メソッドに入りました.<br>
+                ここで, 変数ビュー上の this を開くと, DefaultDrawingEditor クラスのインスタンス (id = 1859859960) の<br>
+                フィールド activeView が DefaultDrawingView クラスのインスタンス (id = 150367587) を参照していることがわかります.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_29.png" class = "threeQuartersSize"></div>
+            </p>
+            <p class = "explanation">
+                先ほどの結果から, DefaultDrawingView クラスのインスタンス (id = 150367587) は<br>
+                DefaultDrawingEditor クラスのインスタンス (id = 1859859960) が参照していることがわかりました.<br>
+                呼び出しスタック上で2つ呼び出し元をクリックしてください.<br>
+                ここで, 課題A4は終了です. <font color="red">時間計測を終了</font>してください.
+                <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_30.png" class = "threeQuartersSize"></div>
+            </p>
+        </p>
+        <hr>
+        <p>
+            課題A4の機能理解が終了しましたら, 以下のアンケートにお答えください.
+            <div><a href = "https://docs.google.com/forms/d/e/1FAIpQLSf8dwsDytVTD9Meex-jQ0ISnRIYu8xX-ExYU97Fr_anBErDdA/viewform" target = "_blank">アンケート回答</a></div>           
+        </p>
+        <a href="JHotDraw2_Reverse_Delta.html">次へ</a>
+    </body>
+</html>
