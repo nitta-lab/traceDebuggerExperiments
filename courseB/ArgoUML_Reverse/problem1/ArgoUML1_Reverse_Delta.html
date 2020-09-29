@@ -11,15 +11,21 @@
         <hr>
         <h2>接近過程抽出</h2>
         <p>
+            ここでは, 課題B3 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B3 (機能理解) と同様,<br>
+            <blockquote>
+                「選択された図形がArgoUMLのシステム内部でどのように管理され, 削除機能の実行によってどのように取り出されて, 削除されるか?」
+            </blockquote>
+            を理解することを目指します.
+        </p>
+        <p>
             Fig クラスはグラフィックエディタ上の図形を表すGEFの内部のクラスです.<br>
             また, FigClass クラスはクラス図上に配置された「クラス」を表す ArgoUML のクラスで, Fig クラスの子孫クラスにあたります.<br>
         </p>
-
         <p>
             <p class = "explanation">
                 課題B3 (機能理解) の終了直後は下図のような状態になっているはずです.<br>
-                ここでは, 課題B3 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B3 (機能理解) と同等の内容を理解していくことを目指します. <br>
                 まずは, ActionRemoveFromDiagram クラスのインスタンスに FigClass クラスのインスタンス (id = 1675174935) が接近する過程を抽出して見ていきます.<br>
+                この FigClass クラスのインスタンスが, この機能で削除されるクラス図上の1つの「クラス」に当たります.<br>
                 ここで, 「実行時点の登録」ビュー上で登録している「89行目 ActionRemoveFromDiagram.actionPerformed(ActionEvent)」をダブルクリックしてください.<br>
                 すると, 現在の実行時点が ActionRemoveFromDiagram クラスの actionPerformed(ActionEvent) メソッドの89行目に移ります.<br>
                 <div class = "image"><img src = "./images/images_problem1_delta_pre/ArgoUML_1_delta_pre_01.png" class = "threeQuartersSize"></div>

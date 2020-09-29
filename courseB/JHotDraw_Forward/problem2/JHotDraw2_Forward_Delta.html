@@ -11,14 +11,20 @@
         <hr>
         <h2>接近過程抽出</h2>
         <p>
-            
+            ここでは, 課題B2 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B2 (機能理解) と同様,<br>
+            <blockquote>
+                「配置された図形がJHotDrawのシステム内部でどのように管理され，図形選択機能の実行によってどのように取り出されて，どのように選択図形として登録されるか?」
+            </blockquote>
+            を理解することを目指します.
         </p>
-
+        <p>
+            Figure クラスは図形を表す JHotDraw のクラスです.<br>
+            また, RectangleFigure クラスは矩形を表す JHotDraw のクラスで, Figure クラスの子孫クラスにあたります.<br>
+        </p>
         <p>
             <p class = "explanation">
                 課題B2 (機能理解) の終了直後は下図のような状態でデバッグ実行が終了しているはずです.<br>
                 デバッグ実行が終了していることを確認したら, 右上にあるパースペクティブを右クリックし, いったんパースペクティブを閉じてください.<br>
-                ここでは, 課題B2 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B2 (機能理解) と同等の内容を理解していくことを目指します. <br>
                 <div class = "image"><img src = "./images/images_problem2_delta_pre/JHotDraw_2_delta_pre_03.png" class = "threeQuartersSize"></div>
             </p>
             <p class = "explanation">
@@ -29,10 +35,11 @@
                 その状態のままで, ブレークポイントビュー上にある「ブレークポイントをEclipseから取り入れる」をクリックしてください.<br>
                 ブレークポイントを取り入れたら, DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目以外のブレークポイントのチェックを外してください.<br>
                 チェックを外したら, デバッグ実行してください.<br>
-                まずは, DefaultDrawingView クラスのインスタンス (id = 150367587) のフィールド selectedFigures が参照している LinkedHashSet のインスタンスに<br>
-                RectangleFigure クラスのインスタンス (id = 1952912699) が追加されるまでの過程を見ていきます.<br>
                 デバッグ実行したら, 再開ボタンを1回押してください.<br>
                 すると, DefaultDrawingView クラスの addToSelection(Figure) メソッド780行目の2回目の実行にまで進みます.<br>
+                この行の実行によって, 実引数 figure が参照している RectangleFigure クラスのインスタンスに対応する矩形が選択状態になります.<br>
+                まずは, DefaultDrawingView クラスのインスタンス (id = 150367587) のフィールド selectedFigures が参照している LinkedHashSet のインスタンスに<br>
+                この RectangleFigure クラスのインスタンス (id = 1952912699) が, この行で追加されるようになるまでの経緯を見ていきます.<br>
                 ここで, ステップネクストを1回押してください.<br>
                 <div class = "image"><img src = "./images/images_problem2_delta_pre/JHotDraw_2_delta_pre_08.png" class = "threeQuartersSize"></div>
                 <div class = "image"><img src = "./images/images_problem2_delta_pre/JHotDraw_2_delta_pre_09.png" class = "threeQuartersSize"></div>

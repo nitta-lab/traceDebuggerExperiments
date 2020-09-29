@@ -68,12 +68,15 @@
         <p>
             <p class = "explanation">
                 先ほどの実行手順にしたがって進めていくと, 下図のように SelectionManager クラスの addFig(Fig) メソッド内の130行目で一時停止している状態になっているはずです.<br>
+                このメソッドの仮引数 f が参照している FigClass クラスのインスタンス (id = 1675174935) が, この機能によって選択されるクラス図上の1つの「クラス」に当たります.<br>
                 この状態になっていれば, <font color="red">ここから時間計測を開始</font>してください. 時間計測はできる限り，1分以内の単位での計測をお願いします.<br>
                 <!--ここで, ソースコードと変数ビューを見ると, SelectionManager クラスのインスタンス (id = 4310438) が参照するフィールド selections へは<br>
                 makeSelectionFor(Fig) メソッドの戻り値である SelectionClass クラスのインスタンス (id = 1672744985) が追加されていることがわかります.<br>-->
                 ここで, ソースコードと変数ビューを見ると, SelectionManager クラスのインスタンス (id = 4310438) のフィールド selections が参照している<br>
-                ArrayList クラスのインスタンスに, makeSelectionFor(Fig) メソッドの戻り値 (SelectionClass クラスのインスタンス) が追加されていることがわかります.<br>
-                課題A2では, このオブジェクトの追加に関わっている SelectionManager クラスのインスタンスと SelectionClass クラスのインスタンスについて見ていきます.<br>
+                ArrayList クラスのインスタンスに, makeSelectionFor(Fig) メソッドの戻り値 (SelectionClass クラスのインスタンス) が追加されることで, <br>
+                引数として渡された FigClass クラスのインスタンス (id = 1675174935) が選択状態になることがわかります.<br>
+                課題A2では, この図形の選択に関わっている SelectionManager クラスのインスタンスと SelectionClass クラスのインスタンス,
+                および FigClass クラスのインスタンスについて見ていきます.<br>
                 まずは, SelectionClass クラスのインスタンスについて見ていきます. ステップインを3回押して, この makeSelectionFor(Fig) メソッドの中に入ってください.<br>
                 <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_01.png" class = "threeQuartersSize"></div>
             </p>
@@ -106,7 +109,8 @@
                 List.add(Object) メソッドの数として渡されており, これがフィールド selections に追加されることがわかります.<br>
                 また, この引数をさらに開くと, SelectionClass クラスのインスタンス (id = 1672744985) が<br>
                 フィールド content として実際に FigClass クラスのインスタンス(id = 1675174935) を参照していることを確認できます.<br>
-                ここからは, FigClass クラスのインスタンス(id = 1675174935) について見ていきます.<br>
+                ここからは, 配置された図形がArgoUMLのシステム内部でどのように管理されているのかを調べるため, <br>
+                FigClass クラスのインスタンス(id = 1675174935) がどこから来たのかについて見ていきます.<br>
                 ソースコードと変数ビューを見ると, このインスタンスは 仮引数 f として渡されていることが確認できます.<br>
                 この仮引数 f の値がどこから来たのかを見るために, 呼び出しスタック上で1つ呼び出し元をクリックしてください.
                 <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_05.png" class = "threeQuartersSize"></div>

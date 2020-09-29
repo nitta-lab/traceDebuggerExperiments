@@ -11,22 +11,28 @@
         <hr>
         <h2>接近過程抽出</h2>
         <p>
+            ここでは, 課題B4 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B4 (機能理解) と同様,<br>
+            <blockquote>
+                「配置された図形がArgoUMLのシステム内部でどのように管理され，選択機能の実行によってどのように取り出されて，どのように選択図形として登録されるか?」
+            </blockquote>
+            を理解することを目指します.
+        </p>
+        <p>
             Fig クラスはグラフィックエディタ上の図形を表すGEFの内部のクラスです.<br>
             また, FigClass クラスはクラス図上に配置された「クラス」を表す ArgoUML のクラスで, Fig クラスの子孫クラスにあたります.<br>
         </p>
-
         <p>
             <p class = "explanation">
                 課題B4 (機能理解) の終了直後は下図のような状態になっているはずです.<br>
-                ここでは, 課題B4 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B4 (機能理解) と同等の内容を理解していくことを目指します. <br>
-                まずは, SelectionManager クラスのインスタンス (id = 4310438) のフィールド selections が参照している ArrayList のインスタンスに<br>
-                SelectionClass クラスのインスタンス (id = 1672744985) が追加されるまでの過程を見ていきます.<br>
                 ここで, 「実行時点の登録」ビュー上で登録している「130行目 SelectionManager.addFig(Fig)」をダブルクリックしてください.<br>
                 すると, 現在の実行時点が SelectionManager クラスの addFig(Fig) メソッドの130行目に移ります.<br>
                 <div class = "image"><img src = "./images/images_problem2_delta_pre/ArgoUML_2_delta_pre_01.png" class = "threeQuartersSize"></div>
                 <div class = "image"><img src = "./images/images_problem2_delta_pre/ArgoUML_2_delta_pre_03.png" class = "threeQuartersSize"></div>
             </p>
             <p class = "explanation">
+                addFig(Fig) の仮引数 f に渡された FigClass クラスのインスタンス (id = 1675174935) が, この機能によって選択されるクラス図上の1つの「クラス」に当たります.<br>
+                まずは, SelectionManager クラスのインスタンス (id = 4310438) のフィールド selections が参照している ArrayList のインスタンスに<br>
+                SelectionClass クラスのインスタンス (id = 1672744985) が, ここで追加されるようになるまでの経緯を見ていきます.<br>
                 ここで, 変数ビュー上の「呼び出し前」のメソッド名が List.add(Object) であることを確認してください.<br>
                 それを確認したら, 変数ビュー上の「呼び出し前」を開いて, 引数を右クリックしてください.<br>
                 右クリックすると, ポップアップメニューが出てくるので, 上の方の ArrayList クラスのインスタンスと<br>

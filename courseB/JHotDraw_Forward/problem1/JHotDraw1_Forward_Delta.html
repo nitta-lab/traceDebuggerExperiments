@@ -11,14 +11,20 @@
         <hr>
         <h2>接近過程抽出</h2>
         <p>
-            
+            ここでは, 課題B1 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B1 (機能理解) と同様,<br>
+            <blockquote>
+                「選択された図形がJHotDrawのシステム内部でどのように管理され，図形移動機能の実行によってどのように取り出されて，移動していくか?」
+            </blockquote>
+            を理解することを目指します.
         </p>
-
+        <p>
+            Figure クラスは図形を表す JHotDraw のクラスです.<br>
+            また, RectangleFigure クラスは矩形を表す JHotDraw のクラスで, Figure クラスの子孫クラスにあたります.<br>
+        </p>
         <p>
             <p class = "explanation">
                 課題B1 (機能理解) の終了直後は下図のような状態でデバッグ実行が終了しているはずです.<br>
                 デバッグ実行が終了していることを確認したら, 右上にあるパースペクティブを右クリックし, いったん「トレースデバッガ(順方向)」のパースペクティブを閉じてください.<br>
-                ここでは, 課題B1 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題B1 (機能理解) と同等の内容を理解していくことを目指します. <br>
                 <div class = "image"><img src = "./images/images_problem1_delta_pre/JHotDraw_1_delta_pre_02.png" class = "threeQuartersSize"></div>
             </p>
             <p class = "explanation">
@@ -38,8 +44,9 @@
             </p>
             <p class = "explanation">
                 現在は, DefaultDragTracker クラスの mousePressed(MouseEvent) メソッドの118行目にいます.<br>
+                このとき, ローカル変数 f で参照されている RectangleFigure クラスのインスタンスが, 図形動機能によって移動している矩形に当たります.<br>
                 まずは, DefaultDragTracker クラスのインスタンス (id = 758826749) のフィールド transformedFigures が参照している HashSet のインスタンスに<br>
-                RectangleFigure クラスのインスタンス (id = 1952912699) が追加されるまでの過程を抽出して見ていきます.<br>
+                RectangleFigure クラスのインスタンス (id = 1952912699) が, この行で追加されるようになるまでの経緯を抽出して見ていきます.<br>
                 ここで, ステップネクストを2回押してください.<br>
                 <div class = "image"><img src = "./images/images_problem1_delta_pre/JHotDraw_1_delta_pre_09.png" class = "threeQuartersSize"></div>
             </p>

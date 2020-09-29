@@ -85,8 +85,10 @@
                 先ほどの前準備にしたがって進めていくと, 下図のように DefaultDrawingView クラスの<br>
                 addToSelection(Figure) メソッド内の780行目で一時停止している状態になっているはずです.<br>
                 この状態になっていれば, <font color="red">ここから時間計測を開始</font>してください. 時間計測はできる限り，1分以内の単位での計測をお願いします.<br>
-                DefaultDrawingView クラスの addToSelection(Figures) メソッドの780行目では, フィールド selectedFigures が参照しているセットに<br>
+                まず, DefaultDrawingView クラスの addToSelection(Figures) メソッドの780行目では, フィールド selectedFigures が参照しているセットに<br>
                 仮引数 figure が参照している RectangleFigure クラスのインスタンス (id = 1952912699) を追加していることが確認できます.<br>
+                この追加によって, この RectangleFigure クラスのインスタンスに対応する矩形が選択状態になります.<br>
+                課題B2では, JHotDrawのシステム内部で, 配置された図形がどのように管理されているかを調べるため, この RectangleFigure クラスのインスタンスがどこから来たのかを確認していきます.<br>
                 <div class = "image"><img src = "./images/images_problem2/JHotDraw_2_01.png" class = "threeQuartersSize"></div>
             </p>
             <p class = "explanation">

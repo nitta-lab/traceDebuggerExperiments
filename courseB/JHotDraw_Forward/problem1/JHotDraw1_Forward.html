@@ -77,7 +77,9 @@
                 DefaultDragTracker クラスの mouseDragged(MouseEvent) メソッドの159行では,<br>
                 ローカル変数 f で参照されているインスタンスに対してメソッドが呼び出されていることが確認できます.<br>
                 ここで, 変数ビュー上の「呼び出し前」を開いてレシーバのIDを見ると, これは RectangleFigure クラスのインスタンス (id = 1952912699) であることがわかります.<br>
-                また, ソースコードを見ると, このローカル変数 f の値は, 157行目の拡張for文でフィールド transformedFigures が参照しているセットから取得してきたものだと確認できます.
+                この RectangleFigure クラスのインスタンスが, 図形移動機能によって移動している矩形に当たります.<br>
+                以下では, JHotDrawのシステム内部で, 選択状態にある図形がどのように管理されているかを調べるため, この RectangleFigure クラスのインスタンスがどこから来たのかを確認していきます.<br>
+                まず, ソースコードを見ると, このローカル変数 f の値は, 157行目の拡張for文でフィールド transformedFigures が参照しているセットから取得してきたものだと確認できます.<br>
                 <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_02.png" class = "threeQuartersSize"></div>
             </p>
             <p class = "explanation">

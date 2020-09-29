@@ -11,15 +11,19 @@
         <hr>
         <h2>接近過程抽出</h2>
         <p>
-            
+            ここでは, 課題A4 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題A4 (機能理解) と同様,<br>
+            <blockquote>
+                「配置された図形がJHotDrawのシステム内部でどのように管理され，図形選択機能の実行によってどのように取り出されて，どのように選択図形として登録されるか?」
+            </blockquote>
+            を理解することを目指します.
         </p>
-
+        <p>
+        </p>
+            Figure クラスは図形を表す JHotDraw のクラスです.<br>
+            また, RectangleFigure クラスは矩形を表す JHotDraw のクラスで, Figure クラスの子孫クラスにあたります.<br>
         <p>
             <p class = "explanation">
                 課題A4 (機能理解) の終了直後は下図のような状態になっているはずです.<br>
-                ここでは, 課題A4 (機能理解) では使用しなかった逆方向バージョンのある機能を用いて, 課題A4 (機能理解) と同等の内容を理解していくことを目指します. <br>
-                まずは, DefaultDrawingView クラスのインスタンス (id = 150367587) のフィールド selectedFigures が参照している LinkedHashSet のインスタンスに<br>
-                RectangleFigure クラスのインスタンス (id = 1952912699) が追加されるまでの過程を見ていきます.<br>
                 ここで, 「実行時点の登録」ビュー上で登録している「780行目 DefaultDrawingView.addToSelection(Figure)」をダブルクリックしてください.<br>
                 すると, 現在の実行時点が DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目に移ります.<br>
                 <div class = "image"><img src = "./images/images_problem2_delta_pre/JHotDraw_2_delta_01.png" class = "threeQuartersSize"></div>
@@ -27,6 +31,9 @@
             </p>
             <p class = "explanation">
                 先ほどの操作によって, 現在は DefaultDrawingView クラスの addToSelection(Figure) メソッドの780行目にいます.<br>
+                この行の実行によって, 実引数 figure が参照している RectangleFigure クラスのインスタンスに対応する矩形が選択状態になります.<br>
+                まずは, DefaultDrawingView クラスのインスタンス (id = 150367587) のフィールド selectedFigures が参照している LinkedHashSet のインスタンスに<br>
+                この RectangleFigure クラスのインスタンス (id = 1952912699) が, この行で追加されるようになるまでの経緯を見ていきます.<br>
                 ここで, 変数ビュー上の「呼び出し前」のメソッド名が Set.add(Object) であることを確認してください.<br>
                 それを確認したら, 変数ビュー上の「呼び出し前」を開いて, 引数を右クリックしてください.<br>
                 右クリックすると, ポップアップメニューが出てくるので, 上の方の LinkedHashSet のインスタンスと RectangleFigure の<br>

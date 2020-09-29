@@ -56,15 +56,17 @@
         <p>
             <p class = "explanation">
                 先ほどの前準備にしたがって進めていくと, 下図のように SelectionManager クラスの addFig(Fig) メソッド内の130行目で一時停止している状態になっているはずです.<br>
+                このメソッドの仮引数 f が参照している FigClass クラスのインスタンス (id = 1675174935) が, この機能によって選択されるクラス図上の1つの「クラス」に当たります.<br>
                 この状態になっていれば, <font color="red">ここから時間計測を開始</font>してください. 時間計測はできる限り，1分以内の単位での計測をお願いします.<br>
                 まずは,「実行時点の登録」ビューの追加ボタンをクリックして実行時点の登録を行ってください.<br>
                 <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_01.png" class = "threeQuartersSize"></div>
             </p>
             <p class = "explanation">
-                ここで, ソースコードと変数ビューの List.add(Object) の呼び出し前を見ると, SelectionManager クラスのインスタンス (id = 4310438) の<br>
-                フィールド selections へは, makeSelectionFor(Fig) メソッドの戻り値である SelectionClass クラスのインスタンス (id = 1672744985) が<br>
-                追加されていることがわかります.<br>
-                課題B4では, このオブジェクトの追加に関わっている SelectionManager クラスのインスタンスと SelectionClass クラスのインスタンスについて見ていきます.<br>
+                ここで, ソースコードと変数ビューの List.add(Object) の呼び出し前を見ると, SelectionManager クラスのインスタンス (id = 4310438) のフィールド selections が参照している<br>
+                ArrayList クラスのインスタンスに, makeSelectionFor(Fig) メソッドの戻り値である SelectionClass クラスのインスタンス (id = 1672744985) が追加されることで, <br>
+                引数として渡された FigClass クラスのインスタンス (id = 1675174935) が選択状態になることがわかります.<br>
+                課題B4では, この図形の選択に関わっている SelectionManager クラスのインスタンスと SelectionClass クラスのインスタンス,
+                および FigClass クラスのインスタンスについて見ていきます.<br>
                 まずは, SelectionClass クラスのインスタンスの方がどこから来たのかを見ていくために, <br>
                 ステップバックインを1回押して SelectionManager クラスの makeSelectionFor(Fig) メソッドの中に後ろから入ってください.
                 <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_02.png" class = "threeQuartersSize"></div>
@@ -91,8 +93,9 @@
             <p class = "explanation">
                 現在は SelectionManager クラスの addFig(Fig) メソッドの130行目を見ています.<br>
                 ここで, ソースコードを見ると, 先ほどの makeSelectionFor(Fig) メソッドに実引数として渡されていた FigClass クラスのインスタンス (id = 1675174935) は, <br>
-                この SelectionManager クラスの addFig(Fig) メソッド内において, 仮引数 f で渡されてきた値であることがわかります<br>
-                ここからは, この 仮引数 f で参照されている FigClass クラスのインスタンス (id = 1675174935) がどこから来たのかを見ていきます.<br>
+                この SelectionManager クラスの addFig(Fig) メソッド内において, 仮引数 f で渡されてきた値であることがわかります.<br>
+                ここからは, 配置された図形がArgoUMLのシステム内部でどのように管理されているのかを調べるため, <br>
+                この 仮引数 f で参照されている FigClass クラスのインスタンス (id = 1675174935) がどこから来たのかを見ていきます.<br>
                 呼び出しスタック上で1つ呼び出し元である SelectionManager クラスの select(Fig) メソッドをクリックしてください.<br>
                 <div class = "image"><img src = "./images/images_problem2/ArgoUML_2_06.png" class = "threeQuartersSize"></div>
             </p>

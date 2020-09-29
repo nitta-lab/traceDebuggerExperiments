@@ -78,6 +78,8 @@
             <p class = "explanation">
                 DefaultDragTracker クラスの mouseDragged(MouseEvent) メソッドの159行では,<br>
                 ローカル変数 f で参照されている RectangleFigure クラスのインスタンスに対してメソッドが呼び出されていることが確認できます.<br>
+                この RectangleFigure クラスのインスタンスが, 図形移動機能によって移動している矩形に当たります.<br>
+                以下では, JHotDrawのシステム内部で, 選択状態にある図形がどのように管理されているかを調べるため, この RectangleFigure クラスのインスタンスがどこから来たのかを確認していきます.<br>
                 まずは, この f の値がどこから来たのかを見るために, ステップバックオーバーを2回押して157行目の拡張for文まで戻ってください.
                 <div class = "image"><img src = "./images/images_problem1/JHotDraw_1_02.png" class = "threeQuartersSize"></div>
             </p>
