@@ -24,8 +24,6 @@
         <p>
             <p class = "explanation">
                 課題B3 (機能理解) の終了直後は下図のような状態になっているはずです.<br>
-                まずは, ActionRemoveFromDiagram クラスのインスタンスに FigClass クラスのインスタンス (id = 1675174935) が接近する過程を抽出して見ていきます.<br>
-                この FigClass クラスのインスタンスが, この機能で削除されるクラス図上の1つの「クラス」に当たります.<br>
                 ここで, 「実行時点の登録」ビュー上で登録している「89行目 ActionRemoveFromDiagram.actionPerformed(ActionEvent)」をダブルクリックしてください.<br>
                 すると, 現在の実行時点が ActionRemoveFromDiagram クラスの actionPerformed(ActionEvent) メソッドの89行目に移ります.<br>
                 <div class = "image"><img src = "./images/images_problem1_delta_pre/ArgoUML_1_delta_pre_01.png" class = "threeQuartersSize"></div>
@@ -33,7 +31,10 @@
             </p>
             <p class = "explanation">
                 先ほどの操作によって, 現在は ActionRemoveFromDiagram クラスの actionPerformed(ActionEvent) メソッドの89行目にいます.<br>
-                ここで, 変数ビュー上の「呼び出し前」のメソッド名が FigNodeModelElement.removeFromDiagram() であることを確認してください.<br>
+                ここで, ローカル変数 f が参照している FigClass クラスのインスタンスが, この機能で削除されるクラス図上の1つの「クラス」に当たり,<br>
+                この行の実行によってその「クラス」が削除されます.<br>
+                まずは, ActionRemoveFromDiagram クラスのインスタンスに FigClass クラスのインスタンス (id = 1675174935) が接近してきた過程を抽出して見ていきます.<br>
+                変数ビュー上の「呼び出し前」のメソッド名が FigNodeModelElement.removeFromDiagram() であることを確認してください.<br>
                 それを確認したら, 変数ビュー上の「呼び出し前」を開いて, レシーバを右クリックしてください.<br>
                 右クリックすると, ポップアップメニューが出てくるので, 「オブジェクトの接近過程抽出」をクリックしてください.<br>
                 <div class = "image"><img src = "./images/images_problem1_delta_pre/ArgoUML_1_delta_pre_04.png" class = "threeQuartersSize"></div>
